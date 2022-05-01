@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Categories\Contracts\" />
+    <Folder Include="Categories\Exceptions\" />
+    <Folder Include="Items\Contracts\" />
+    <Folder Include="Items\Exceptions\" />
+  </ItemGroup>
+
+</Project>
