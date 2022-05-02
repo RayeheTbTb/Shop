@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shop.Persistence.EF.Categories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,8 @@ namespace Shop.Persistence.EF
         {
             base.OnModelCreating(modelBuilder);
 
-            /*modelBuilder.ApplyConfigurationsFromAssembly
-                (typeof(CategoryEntityMap).Assembly);*/
+            modelBuilder.ApplyConfigurationsFromAssembly
+                (typeof(CategoryEntityMap).Assembly);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Shop.Entities
         public int WholePrice { get; set; }
         public DateTime Date { get; set; }
 
-        public int ItemId { get; set; }
+        public int ProductId { get; set; }
         public Product Product { get; set; }
     }
 }
