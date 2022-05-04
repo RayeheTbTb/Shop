@@ -13,7 +13,7 @@ namespace Shop.Test.Tools
         {
             return new Category
             {
-                Title = "Daity"
+                Title = "Dairy"
             };
         }
 

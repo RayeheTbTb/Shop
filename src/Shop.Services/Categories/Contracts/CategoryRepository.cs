@@ -1,5 +1,6 @@
 ﻿using Shop.Entities;
 using Shop.Infrastructure.Application;
+using Shop.Services.Products.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace Shop.Services.Categories.Contracts
         Category FindById(int id);
         void Delete(Category category);
         int CategoryProductCount(int id);
+        IList<GetCategoryDto> GetAll();
+        IList<GetProductDto> GetProducts(int id);
     }
 }

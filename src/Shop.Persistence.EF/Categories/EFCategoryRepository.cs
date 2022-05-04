@@ -1,6 +1,7 @@
 ﻿using Shop.Entities;
 using Shop.Infrastructure.Application;
 using Shop.Services.Categories.Contracts;
+using Shop.Services.Products.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,30 @@ namespace Shop.Persistence.EF.Categories
         public Category FindById(int id)
         {
             return _dataContext.Categories.Find(id);
+        }
+
+        public IList<GetCategoryDto> GetAll()
+        {
+            return _dataContext.Categories
+                .Select(_ => new GetCategoryDto
+                {
+                    Id = _.Id,
+                    Title = _.Title
+                }).ToList();
+        }
+
+        public IList<GetProductDto> GetProducts(int id)
+        {
+            return _dataContext.Categories
+                .FirstOrDefault(_ => _.Id == id)
+                .Products.Select(_ => new GetProductDto
+                {
+                    Id = _.Id,
+                    Code = _.Code,
+                    Name = _.Name,
+                    InStockCount = _.InStockCount,
+                    Price = _.Price
+                }).ToList();
         }
 
         public bool IsExistCategoryTitle(string title)

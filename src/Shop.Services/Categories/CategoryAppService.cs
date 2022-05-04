@@ -2,6 +2,7 @@
 using Shop.Infrastructure.Application;
 using Shop.Services.Categories.Contracts;
 using Shop.Services.Categories.Exceptions;
+using Shop.Services.Products.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,17 @@ namespace Shop.Services.Categories
 
             _repository.Delete(category);
             _unitOfWork.Commit();
+        }
+
+        public IList<GetCategoryDto> GetAll()
+        {
+            return _repository.GetAll();
+        }
+
+        public IList<GetProductDto> GetProducts(int id)
+        {
+            return _repository.GetProducts(id);
+
         }
 
         public void Update(int id, UpdateCategoryDto dto)

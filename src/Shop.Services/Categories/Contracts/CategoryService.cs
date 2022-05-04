@@ -1,4 +1,5 @@
 ﻿using Shop.Infrastructure.Application;
+using Shop.Services.Products.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,7 @@ namespace Shop.Services.Categories.Contracts
         void Add(AddCategoryDto dto);
         void Update(int id, UpdateCategoryDto dto);
         void Delete(int id);
+        IList<GetCategoryDto> GetAll();
+        IList<GetProductDto> GetProducts(int id);
     }
 }
