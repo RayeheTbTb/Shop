@@ -38,5 +38,18 @@ namespace Shop.Services.Categories
             _repository.Add(category);
             _unitOfWork.Commit();
         }
+
+        public void Update(int id, UpdateCategoryDto dto)
+        {
+            Category category = _repository.FindById(id);
+
+            if (category == null)
+            {
+                throw new CategoryNotFoundException();
+            }
+
+            category.Title = dto.Title;
+            _unitOfWork.Commit();
+        }
     }
 }

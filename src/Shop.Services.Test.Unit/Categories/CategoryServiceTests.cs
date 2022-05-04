@@ -53,6 +53,30 @@ namespace Shop.Services.Test.Unit.Categories
             expected.Should().ThrowExactly<DuplicateCategoryTitleException>();
         }
 
+        [Fact]
+        public void Update_updates_category_properly()
+        {
+            var category = GenerateCategory("dummy");
+            AddCategoryToDatabase(category);
+            var dto = GenerateUpdateCategoryDto("updatDummy");
+
+            _sut.Update(category.Id, dto);
+
+            var expected = _dataContext.Categories.FirstOrDefault(_ => _.Id == category.Id);
+            expected.Title.Should().Be(dto.Title);
+        }
+
+        [Theory]
+        [InlineData(4)]
+        public void Update_throws_CategoryNotFoundException_when_category_with_given_id_does_not_exist(int fakeCategoryId)
+        {
+            var dto = GenerateUpdateCategoryDto("updateDummy");
+
+            Action expected = () => _sut.Update(fakeCategoryId, dto);
+
+            expected.Should().ThrowExactly<CategoryNotFoundException>();
+        }
+
         private static AddCategoryDto GenerateAddCategoryDto(string title)
         {
             return new AddCategoryDto
@@ -72,6 +96,13 @@ namespace Shop.Services.Test.Unit.Categories
         private void AddCategoryToDatabase(Category category)
         {
             _dataContext.Manipulate(_ => _.Categories.Add(category));
+        }
+        private static UpdateCategoryDto GenerateUpdateCategoryDto(string title)
+        {
+            return new UpdateCategoryDto
+            {
+                Title = title
+            };
         }
     }
 }

@@ -3,6 +3,8 @@ using Shop.Entities;
 using Shop.Infrastructure.Application;
 using Shop.Infrastructure.Test;
 using Shop.Persistence.EF;
+using Shop.Persistence.EF.Categories;
+using Shop.Services.Categories;
 using Shop.Services.Categories.Contracts;
 using Shop.Specs.Infrastructure;
 using System;
@@ -32,6 +34,9 @@ namespace Shop.Specs.Categories
         public AddCategory(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
+            _repository = new EFCategoryRepository(_dataContext);
+            _unitOfWork = new EFUnitOfWork(_dataContext);
+            _sut = new CategoryAppService(_repository, _unitOfWork);
         }
 
         [Given("هیچ دسته بندی در فهرست دسته بندی کالا وجود ندارد")]
