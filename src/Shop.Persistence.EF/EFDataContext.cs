@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shop.Entities;
 using Shop.Persistence.EF.Categories;
 using System;
 using System.Collections.Generic;
@@ -25,5 +26,10 @@ namespace Shop.Persistence.EF
             modelBuilder.ApplyConfigurationsFromAssembly
                 (typeof(CategoryEntityMap).Assembly);
         }
+
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<PurchaseBill> PurchaseBills { get; set; }
+        public DbSet<SaleBill> SaleBills { get; set; }
     }
 }

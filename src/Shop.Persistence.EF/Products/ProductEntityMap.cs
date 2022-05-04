@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Persistence.EF.Items
 {
-    public class ItemEntityMap : IEntityTypeConfiguration<Product>
+    public class ProductEntityMap : IEntityTypeConfiguration<Product>
     {
         public void Configure(EntityTypeBuilder<Product> _)
         {

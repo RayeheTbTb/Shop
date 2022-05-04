@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Items\**" />
+    <EmbeddedResource Remove="Items\**" />
+    <None Remove="Items\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -21,8 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Categories\" />
-    <Folder Include="Items\" />
+    <ProjectReference Include="..\Shop.Persistence.EF\Shop.Persistence.EF.csproj" />
   </ItemGroup>
 
 </Project>

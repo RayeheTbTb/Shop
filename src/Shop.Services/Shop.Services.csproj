@@ -5,10 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Categories\Contracts\" />
     <Folder Include="Categories\Exceptions\" />
-    <Folder Include="Items\Contracts\" />
-    <Folder Include="Items\Exceptions\" />
+    <Folder Include="Products\Exceprions\" />
+    <Folder Include="PurchaseBills\Exceptions\" />
+    <Folder Include="SaleBills\Exceptions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shop.Entities\Shop.Entities.csproj" />
+    <ProjectReference Include="..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

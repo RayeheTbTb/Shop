@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Items\**" />
+    <EmbeddedResource Remove="Items\**" />
+    <None Remove="Items\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.6.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.8" />
@@ -26,8 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Categories\" />
-    <Folder Include="Items\" />
+    <Folder Include="SaleBills\" />
+    <Folder Include="PurchaseBills\" />
+    <Folder Include="Products\" />
   </ItemGroup>
 
   <ItemGroup>

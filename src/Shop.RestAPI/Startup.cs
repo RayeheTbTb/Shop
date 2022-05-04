@@ -8,6 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Shop.Infrastructure.Application;
+using Shop.Persistence.EF;
+using Shop.Persistence.EF.Categories;
+using Shop.Services.Categories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +40,25 @@ namespace Shop.RestAPI
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-           
+            builder.RegisterType<EFDataContext>()
+                .WithParameter("connectionString", Configuration["ConnectionString"])
+                 .AsSelf()
+                 .InstancePerLifetimeScope();
+
+            builder.RegisterAssemblyTypes(typeof(EFCategoryRepository).Assembly)
+                      .AssignableTo<Repository>()
+                      .AsImplementedInterfaces()
+                      .InstancePerLifetimeScope();
+
+            builder.RegisterAssemblyTypes(typeof(CategoryAppService).Assembly)
+                      .AssignableTo<Service>()
+                      .AsImplementedInterfaces()
+                      .InstancePerLifetimeScope();
+
+            builder.RegisterType<EFUnitOfWork>()
+                .As<UnitOfWork>()
+                .InstancePerLifetimeScope();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
