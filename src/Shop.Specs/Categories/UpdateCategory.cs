@@ -7,6 +7,7 @@ using Shop.Persistence.EF.Categories;
 using Shop.Services.Categories;
 using Shop.Services.Categories.Contracts;
 using Shop.Specs.Infrastructure;
+using Shop.Test.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,10 +45,7 @@ namespace Shop.Specs.Categories
         [Given("دسته بندی با عنوان 'لبنیات' در فهرست دسته بندی کالا وجود دارد")]
         public void Given()
         {
-            _category = new Category
-            {
-                Title = "Dairy"
-            };
+            _category = CategoryFactory.CreateCategory();
             _dataContext.Manipulate(_ => _.Categories.Add(_category));
         }
 

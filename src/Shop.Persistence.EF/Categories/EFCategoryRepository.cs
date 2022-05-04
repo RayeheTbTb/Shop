@@ -23,6 +23,16 @@ namespace Shop.Persistence.EF.Categories
             _dataContext.Categories.Add(category);
         }
 
+        public int CategoryProductCount(int id)
+        {
+            return _dataContext.Categories.FirstOrDefault(_ => _.Id == id).Products.Count();
+        }
+
+        public void Delete(Category category)
+        {
+            _dataContext.Categories.Remove(category);
+        }
+
         public Category FindById(int id)
         {
             return _dataContext.Categories.Find(id);

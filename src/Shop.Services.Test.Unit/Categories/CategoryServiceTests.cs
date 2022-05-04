@@ -77,6 +77,41 @@ namespace Shop.Services.Test.Unit.Categories
             expected.Should().ThrowExactly<CategoryNotFoundException>();
         }
 
+        [Fact]
+        public void Delete_deletes_category_propely()
+        {
+            var category = GenerateCategory("dummy");
+            AddCategoryToDatabase(category);
+
+            _sut.Delete(category.Id);
+
+            _dataContext.Categories.Should()
+                .NotContain(_ => _.Id == category.Id
+                    && _.Title == category.Title);
+        }
+
+        [Theory]
+        [InlineData(4)]
+        public void Delete_throws_CategoryNotFoundException_when_category_with_given_id_does_not_exist(int fakeCategoryId)
+        {
+            Action expected = () => _sut.Delete(fakeCategoryId);
+
+            expected.Should().ThrowExactly<CategoryNotFoundException>();
+        }
+
+        [Fact]
+        public void Delete_throws_UnableToDeleteCategoryWithProductException_when_given_category_has_at_least_one_product()
+        {
+            var category = GenerateCategory("dummy");
+            AddCategoryToDatabase(category);
+            var product = GenerateProduct(category);
+            AddProductToDatabase(product);
+
+            Action expected = () => _sut.Delete(category.Id);
+
+            expected.Should().ThrowExactly<UnableToDeleteCategoryWithProductException>();
+        }
+
         private static AddCategoryDto GenerateAddCategoryDto(string title)
         {
             return new AddCategoryDto
@@ -97,12 +132,27 @@ namespace Shop.Services.Test.Unit.Categories
         {
             _dataContext.Manipulate(_ => _.Categories.Add(category));
         }
+
         private static UpdateCategoryDto GenerateUpdateCategoryDto(string title)
         {
             return new UpdateCategoryDto
             {
                 Title = title
             };
+        }
+        private static Product GenerateProduct(Category category)
+        {
+            return new Product
+            {
+                Name = "dummy",
+                Category = category,
+                CategoryId = category.Id
+            };
+        }
+
+        private void AddProductToDatabase(Product product)
+        {
+            _dataContext.Manipulate(_ => _.Products.Add(product));
         }
     }
 }

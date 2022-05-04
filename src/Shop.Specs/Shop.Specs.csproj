@@ -40,6 +40,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
     <ProjectReference Include="..\Shop.Persistence.EF\Shop.Persistence.EF.csproj" />
+    <ProjectReference Include="..\Shop.Test.Tools\Shop.Test.Tools.csproj" />
   </ItemGroup>
 
 </Project>
