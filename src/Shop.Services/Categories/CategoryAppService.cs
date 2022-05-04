@@ -1,6 +1,7 @@
 ﻿using Shop.Entities;
 using Shop.Infrastructure.Application;
 using Shop.Services.Categories.Contracts;
+using Shop.Services.Categories.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,18 @@ namespace Shop.Services.Categories
 
         public void Add(AddCategoryDto dto)
         {
+            var isCategoryExist = _repository.IsExistCategoryTitle(dto.Title);
+
+            if (isCategoryExist)
+            {
+                throw new DuplicateCategoryTitleException();
+            }
+
             var category = new Category
             {
                 Title = dto.Title
             };
+
 
             _repository.Add(category);
             _unitOfWork.Commit();

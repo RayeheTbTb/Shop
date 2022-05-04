@@ -22,5 +22,10 @@ namespace Shop.Persistence.EF.Categories
         {
             _dataContext.Categories.Add(category);
         }
+
+        public bool IsExistCategoryTitle(string title)
+        {
+            return _dataContext.Categories.Any(_ => _.Title == title);
+        }
     }
 }

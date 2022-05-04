@@ -11,5 +11,6 @@ namespace Shop.Services.Categories.Contracts
     public interface CategoryRepository : Repository
     {
         void Add(Category category);
+        bool IsExistCategoryTitle(string title);
     }
 }

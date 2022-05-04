@@ -11,6 +11,7 @@ namespace Shop.Persistence.EF
 {
     public class EFDataContext : DbContext
     {
+        
         public EFDataContext(string connectionString) :
             this(new DbContextOptionsBuilder().UseSqlServer(connectionString).Options)
         { }

@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Categories\Exceptions\" />
     <Folder Include="Products\Exceprions\" />
     <Folder Include="PurchaseBills\Exceptions\" />
     <Folder Include="SaleBills\Exceptions\" />
