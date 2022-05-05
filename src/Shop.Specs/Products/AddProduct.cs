@@ -14,6 +14,8 @@ using Shop.Services.Products;
 using static Shop.Specs.BDDHelper;
 using Shop.Test.Tools;
 using Shop.Entities;
+using Shop.Services.PurchaseBills.Contracts;
+using Shop.Persistence.EF.PurchaseBills;
 
 namespace Shop.Specs.Products
 {
@@ -27,6 +29,7 @@ namespace Shop.Specs.Products
     {
         private readonly EFDataContext _dataContext;
         private readonly ProductRepository _repository;
+        private readonly PurchaseBillRepository _purchaseBillRepository;
         private readonly UnitOfWork _unitOfWork;
         private readonly ProductService _sut;
         private DefineProductDto _dto;
@@ -36,7 +39,8 @@ namespace Shop.Specs.Products
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork);
+            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
         }
 
         [Given("دسته بندی با عنوان 'لبنیات' در فهرست دسته بندی کالا وجود دارد")]

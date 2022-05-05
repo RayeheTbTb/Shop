@@ -48,6 +48,7 @@ namespace Shop.Migrations
                             .WithColumn("SellerName").AsString(100).NotNullable()
                             .WithColumn("Date").AsDateTime().NotNullable()
                             .WithColumn("Count").AsInt32().NotNullable()
+                            .WithColumn("WholePrice").AsInt32().NotNullable()
                             .WithColumn("ProductId").AsInt32().NotNullable()
                             .ForeignKey("FK_PurchaseBills_Products", "Products", "Id")
                             .OnDelete(System.Data.Rule.None);

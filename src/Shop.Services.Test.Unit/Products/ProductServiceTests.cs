@@ -4,9 +4,11 @@ using Shop.Infrastructure.Application;
 using Shop.Infrastructure.Test;
 using Shop.Persistence.EF;
 using Shop.Persistence.EF.Products;
+using Shop.Persistence.EF.PurchaseBills;
 using Shop.Services.Products;
 using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
+using Shop.Services.PurchaseBills.Contracts;
 using Shop.Test.Tools;
 using System;
 using System.Collections.Generic;
@@ -23,13 +25,15 @@ namespace Shop.Services.Test.Unit.Products
         private readonly ProductService _sut;
         private readonly UnitOfWork _unitOfWork;
         private readonly ProductRepository _repository;
+        private readonly PurchaseBillRepository _purchaseBillRepository;
 
         public ProductServiceTests()
         {
             _dataContext = new EFInMemoryDatabase().CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _repository = new EFProductRepository(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork);
+            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
         }
 
         [Fact]
@@ -75,6 +79,42 @@ namespace Shop.Services.Test.Unit.Products
             Action expected = () => _sut.Add(dto);
 
             expected.Should().ThrowExactly<DuplicateProductNameInCategoryException>();
+        }
+
+        [Fact]
+        public void AddToStock_adds_the_given_count_to_product_InStockCount_properly()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = ProductFactory.CreateProduct(category);
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            AddProductToStockDto dto = 
+                GenerateAddProductToStockDto(category, product);
+
+            _sut.AddToStock(dto);
+
+            _dataContext.Products
+                .FirstOrDefault(_ => _.Code == product.Code).InStockCount
+                .Should().Be(20);
+            var expected = _dataContext.PurchaseBills.FirstOrDefault();
+            expected.SellerName.Should().Be(dto.SellerName);
+            expected.Date.Should().Be(dto.Date);
+            expected.WholePrice.Should().Be(dto.WholePrice);
+            expected.Count.Should().Be(dto.Count);
+            expected.Product.Code.Should().Be(dto.Code);
+        }
+
+        private static AddProductToStockDto GenerateAddProductToStockDto(Category category, Product product)
+        {
+            return new AddProductToStockDto
+            {
+                CategoryId = category.Id,
+                Code = product.Code,
+                Count = 10,
+                Date = DateTime.Parse("2022-04-27T05:22:05.264Z"),
+                SellerName = "dummy",
+                WholePrice = 10000
+            };
         }
 
         private static DefineProductDto GenerateDefineProductDto(Category category)

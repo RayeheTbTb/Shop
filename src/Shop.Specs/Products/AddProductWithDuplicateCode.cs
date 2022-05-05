@@ -15,6 +15,8 @@ using static Shop.Specs.BDDHelper;
 using Shop.Test.Tools;
 using Shop.Entities;
 using Shop.Services.Products.Exceptions;
+using Shop.Services.PurchaseBills.Contracts;
+using Shop.Persistence.EF.PurchaseBills;
 
 namespace Shop.Specs.Products
 {
@@ -29,6 +31,7 @@ namespace Shop.Specs.Products
         private readonly EFDataContext _dataContext;
         private readonly ProductRepository _repository;
         private readonly UnitOfWork _unitOfWork;
+        private readonly PurchaseBillRepository _purchaseBillRepository;
         private readonly ProductService _sut;
         private Category _category;
         private Product _product;
@@ -38,7 +41,8 @@ namespace Shop.Specs.Products
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork);
+            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
         }
 
         [Given("کالایی با کد کالای '1' در فهرست کالاها وجود دارد")]

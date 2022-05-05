@@ -22,6 +22,16 @@ namespace Shop.Persistence.EF.Products
             _dataContext.Products.Add(product);
         }
 
+        public void AddtoStock(int code, int count)
+        {
+            _dataContext.Products.FirstOrDefault(_ => _.Code == code).InStockCount += count;
+        }
+
+        public Product FindByCode(int code)
+        {
+            return _dataContext.Products.Where(_ => _.Code == code).FirstOrDefault();
+        }
+
         public bool IsExistCode(int code)
         {
             return _dataContext.Products.Any(_ => _.Code == code);

@@ -18,6 +18,7 @@ namespace Shop.Test.Tools
                 Name = "Kale Milk",
                 Code = 1,
                 MinimumInStock = 1,
+                InStockCount = 10,
                 CategoryId = category.Id
             };
         }
@@ -29,6 +30,7 @@ namespace Shop.Test.Tools
                 Name = name,
                 Code = 1,
                 MinimumInStock = 1,
+                InStockCount = 10,
                 CategoryId = category.Id
             };
         }

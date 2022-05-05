@@ -2,6 +2,7 @@
 using Shop.Infrastructure.Application;
 using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
+using Shop.Services.PurchaseBills.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,14 @@ namespace Shop.Services.Products
     public class ProductAppService : ProductService
     {
         private readonly ProductRepository _repository;
+        private readonly PurchaseBillRepository _purchaseBillRepository;
         private readonly UnitOfWork _unitOfWork;
 
-        public ProductAppService(ProductRepository repository, UnitOfWork unitOfWork)
+        public ProductAppService(ProductRepository repository, UnitOfWork unitOfWork, PurchaseBillRepository purchaseBillRepository)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _purchaseBillRepository = purchaseBillRepository;
         }
 
         public void Add(DefineProductDto dto)
@@ -44,6 +47,24 @@ namespace Shop.Services.Products
                 CategoryId = dto.CategoryId
             };
             _repository.Add(product);
+            _unitOfWork.Commit();
+        }
+
+        public void AddToStock(AddProductToStockDto dto)
+        {
+            Product product = _repository.FindByCode(dto.Code);
+            var purchaseBill = new PurchaseBill
+            {
+                SellerName = dto.SellerName,
+                Count = dto.Count,
+                Date = dto.Date,
+                WholePrice = dto.WholePrice,
+                Product = product,
+                ProductId = product.Id
+            };
+
+            _repository.AddtoStock(dto.Code, dto.Count);
+            _purchaseBillRepository.Add(purchaseBill);
             _unitOfWork.Commit();
         }
     }

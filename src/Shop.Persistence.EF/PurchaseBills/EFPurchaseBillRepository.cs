@@ -1,4 +1,5 @@
-﻿using Shop.Services.PurchaseBills.Contracts;
+﻿using Shop.Entities;
+using Shop.Services.PurchaseBills.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,16 @@ namespace Shop.Persistence.EF.PurchaseBills
 {
     public class EFPurchaseBillRepository : PurchaseBillRepository
     {
+        private readonly EFDataContext _dataContext;
+
+        public EFPurchaseBillRepository(EFDataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
+
+        public void Add(PurchaseBill purchaseBill)
+        {
+            _dataContext.PurchaseBills.Add(purchaseBill);
+        }
     }
 }
