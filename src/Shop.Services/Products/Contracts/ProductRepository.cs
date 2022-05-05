@@ -15,5 +15,6 @@ namespace Shop.Services.Products.Contracts
         bool IsExistNameInCategory(int categoryId, string name);
         Product FindByCode(int code);
         void AddtoStock(int code, int count);
+        void Delete(Product product);
     }
 }

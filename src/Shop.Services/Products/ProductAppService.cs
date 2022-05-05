@@ -3,6 +3,7 @@ using Shop.Infrastructure.Application;
 using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
 using Shop.Services.PurchaseBills.Contracts;
+using Shop.Services.PurchaseBills.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +54,11 @@ namespace Shop.Services.Products
         public void AddToStock(AddProductToStockDto dto)
         {
             Product product = _repository.FindByCode(dto.Code);
+            if (product == null)
+            {
+                throw new ProductDoesNotExistException();
+            }
+
             var purchaseBill = new PurchaseBill
             {
                 SellerName = dto.SellerName,
@@ -65,6 +71,18 @@ namespace Shop.Services.Products
 
             _repository.AddtoStock(dto.Code, dto.Count);
             _purchaseBillRepository.Add(purchaseBill);
+            _unitOfWork.Commit();
+        }
+
+        public void Delete(int code)
+        {
+            Product product = _repository.FindByCode(code);
+            if(product == null)
+            {
+                throw new ProductDoesNotExistException();
+            }
+
+            _repository.Delete(product);
             _unitOfWork.Commit();
         }
     }

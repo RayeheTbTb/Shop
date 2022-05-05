@@ -19,7 +19,7 @@ using static Shop.Specs.BDDHelper;
 
 namespace Shop.Specs.Products
 {
-    [Scenario("تعریف کالا")]
+    [Scenario("ورود کالا")]
     [Feature("",
         AsA = "فروشنده",
         IWantTo = " کالا را مدیریت کنم",

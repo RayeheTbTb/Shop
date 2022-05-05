@@ -9,6 +9,7 @@ using Shop.Services.Products;
 using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
 using Shop.Services.PurchaseBills.Contracts;
+using Shop.Services.PurchaseBills.Exceptions;
 using Shop.Test.Tools;
 using System;
 using System.Collections.Generic;
@@ -59,8 +60,8 @@ namespace Shop.Services.Test.Unit.Products
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = ProductFactory.CreateProduct(category);
             ProductFactory.AddProductToDatabase(product, _dataContext);
-            var dto= 
-                GenerateDefineProductDtoWithSpecificCode(category,product.Code);
+            var dto =
+                GenerateDefineProductDtoWithSpecificCode(category, product.Code);
 
             Action expected = () => _sut.Add(dto);
 
@@ -88,8 +89,8 @@ namespace Shop.Services.Test.Unit.Products
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = ProductFactory.CreateProduct(category);
             ProductFactory.AddProductToDatabase(product, _dataContext);
-            AddProductToStockDto dto = 
-                GenerateAddProductToStockDto(category, product);
+            AddProductToStockDto dto =
+                GenerateAddProductToStockDto(category, product.Code);
 
             _sut.AddToStock(dto);
 
@@ -104,12 +105,48 @@ namespace Shop.Services.Test.Unit.Products
             expected.Product.Code.Should().Be(dto.Code);
         }
 
-        private static AddProductToStockDto GenerateAddProductToStockDto(Category category, Product product)
+        [Theory]
+        [InlineData(2)]
+        public void AddToStock_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int code)
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            AddProductToStockDto dto =
+                GenerateAddProductToStockDto(category, code);
+
+            Action expected = () => _sut.AddToStock(dto);
+
+            expected.Should().ThrowExactly<ProductDoesNotExistException>();
+        }
+
+        [Fact]
+        public void Delete_deletes_product_properly()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = ProductFactory.CreateProduct(category);
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            _sut.Delete(product.Code);
+
+            _dataContext.Products.Should().NotContain(_ => _.Code == product.Code);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void Delete_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int code)
+        {
+            Action expected = () => _sut.Delete(code);
+
+            expected.Should().ThrowExactly<ProductDoesNotExistException>();
+        }
+
+        private static AddProductToStockDto GenerateAddProductToStockDto(Category category, int productCode)
         {
             return new AddProductToStockDto
             {
                 CategoryId = category.Id,
-                Code = product.Code,
+                Code = productCode,
                 Count = 10,
                 Date = DateTime.Parse("2022-04-27T05:22:05.264Z"),
                 SellerName = "dummy",

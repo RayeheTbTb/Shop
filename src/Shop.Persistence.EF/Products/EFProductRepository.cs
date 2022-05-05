@@ -27,6 +27,11 @@ namespace Shop.Persistence.EF.Products
             _dataContext.Products.FirstOrDefault(_ => _.Code == code).InStockCount += count;
         }
 
+        public void Delete(Product product)
+        {
+            _dataContext.Remove(product);
+        }
+
         public Product FindByCode(int code)
         {
             return _dataContext.Products.Where(_ => _.Code == code).FirstOrDefault();

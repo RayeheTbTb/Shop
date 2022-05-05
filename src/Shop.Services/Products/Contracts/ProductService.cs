@@ -11,5 +11,6 @@ namespace Shop.Services.Products.Contracts
     {
         void Add(DefineProductDto dto);
         void AddToStock(AddProductToStockDto dto);
+        void Delete(int code);
     }
 }
