@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shop.Entities\Shop.Entities.csproj" />
+    <ProjectReference Include="..\Shop.Persistence.EF\Shop.Persistence.EF.csproj" />
   </ItemGroup>
 
 </Project>

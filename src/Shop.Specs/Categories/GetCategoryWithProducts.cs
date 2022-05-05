@@ -47,21 +47,12 @@ namespace Shop.Specs.Categories
         {
             _category = CategoryFactory.CreateCategory();
             _dataContext.Manipulate(_ => _.Categories.Add(_category));
-
         }
 
         [And("کالایی با عنوان 'شیر کاله'و کد کالای '1' در دسته بندی با عنوان 'لبنیات' وجود دارد")]
         public void GivenAnd()
         {
-            _product = new Product
-            {
-                Name = "Kale Milk",
-                Code = 1,
-                Category = _category,
-                CategoryId = _category.Id,
-                Price = 1000,
-                InStockCount = 5
-            };
+            _product = GenerateProduct();
             _dataContext.Manipulate(_ => _.Products.Add(_product));
         }
 
@@ -89,6 +80,19 @@ namespace Shop.Specs.Categories
             GivenAnd();
             When();
             Then();
+        }
+
+        private Product GenerateProduct()
+        {
+            return new Product
+            {
+                Name = "Kale Milk",
+                Code = 1,
+                Category = _category,
+                CategoryId = _category.Id,
+                Price = 1000,
+                InStockCount = 5
+            };
         }
     }
 }

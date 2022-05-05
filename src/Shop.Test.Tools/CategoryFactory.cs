@@ -1,4 +1,6 @@
 ﻿using Shop.Entities;
+using Shop.Infrastructure.Test;
+using Shop.Persistence.EF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,11 @@ namespace Shop.Test.Tools
             {
                 Title = title
             };
+        }
+
+        public static void AddCategoryToDatabase(Category category, EFDataContext datacontext)
+        {
+            datacontext.Manipulate(_ => _.Categories.Add(category));
         }
     }
 }

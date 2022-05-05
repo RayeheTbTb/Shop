@@ -52,6 +52,7 @@ namespace Shop.Specs.Categories
             {
                 Title = "Dairy"
             };
+
             _sut.Add(_dto);
         }
 

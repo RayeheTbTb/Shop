@@ -130,17 +130,8 @@ namespace Shop.Services.Test.Unit.Categories
         {
             var category = GenerateCategory("dummy");
             AddCategoryToDatabase(category);
-
-            var product = new Product
-            {
-                Name = "dummy",
-                Code = 1,
-                Category = category,
-                CategoryId = category.Id,
-                Price = 1000,
-                InStockCount = 5
-            };
-            _dataContext.Manipulate(_ => _.Products.Add(product));
+            var product = GenerateProduct(category);
+            AddProductToDatabase(product);
 
             var expected = _sut.GetProducts(category.Id);
 
@@ -185,8 +176,11 @@ namespace Shop.Services.Test.Unit.Categories
             return new Product
             {
                 Name = "dummy",
+                Code = 1,
                 Category = category,
-                CategoryId = category.Id
+                CategoryId = category.Id,
+                Price = 1000,
+                InStockCount = 5
             };
         }
 

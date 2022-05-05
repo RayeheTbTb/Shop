@@ -34,7 +34,6 @@ namespace Shop.Specs.Categories
         private AddCategoryDto _dto;
         Action expected;
 
-
         public AddCategoryWithDuplicateTitle(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
@@ -57,6 +56,7 @@ namespace Shop.Specs.Categories
             {
                 Title = "Dairy"
             };
+
             expected = () => _sut.Add(_dto);
         }
 

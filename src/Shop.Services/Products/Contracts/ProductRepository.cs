@@ -1,4 +1,5 @@
-﻿using Shop.Infrastructure.Application;
+﻿using Shop.Entities;
+using Shop.Infrastructure.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,8 @@ namespace Shop.Services.Products.Contracts
 {
     public interface ProductRepository : Repository
     {
+        void Add(Product product);
+        bool IsExistCode(int code);
+        bool IsExistNameInCategory(int categoryId, string name);
     }
 }

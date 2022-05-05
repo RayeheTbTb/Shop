@@ -34,13 +34,18 @@
   <ItemGroup>
     <Folder Include="SaleBills\" />
     <Folder Include="PurchaseBills\" />
-    <Folder Include="Products\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Shop.Infrastructure\Shop.Infrastructure.csproj" />
     <ProjectReference Include="..\Shop.Persistence.EF\Shop.Persistence.EF.csproj" />
     <ProjectReference Include="..\Shop.Test.Tools\Shop.Test.Tools.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -52,7 +52,6 @@ namespace Shop.Specs.Categories
         public void When()
         {
             expected = _sut.GetAll();
-
         }
 
         [Then("دسته بندی با عنوان 'لبنیات' باید نمایش داده شود")]

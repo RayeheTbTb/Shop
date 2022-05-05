@@ -62,7 +62,8 @@ namespace Shop.Specs.Categories
         [Then("دسته بندی با عنوان 'نوشیدنی ها'در فهرست دسته بندی کالا باید وجود داشته باشد")]
         public void Then()
         {
-            var expected = _dataContext.Categories.FirstOrDefault(_ => _.Id == _category.Id);
+            var expected = _dataContext.Categories
+                .FirstOrDefault(_ => _.Id == _category.Id);
             expected.Title.Should().Be(_dto.Title);
         }
         

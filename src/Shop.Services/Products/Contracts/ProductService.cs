@@ -9,5 +9,6 @@ namespace Shop.Services.Products.Contracts
 {
     public interface ProductService : Service
     {
+        void Add(DefineProductDto dto);
     }
 }
