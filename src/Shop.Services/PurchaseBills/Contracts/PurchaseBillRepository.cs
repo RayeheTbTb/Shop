@@ -11,5 +11,6 @@ namespace Shop.Services.PurchaseBills.Contracts
     public interface PurchaseBillRepository : Repository
     {
         void Add(PurchaseBill purchaseBill);
+        bool BillExistsForProduct(int code);
     }
 }

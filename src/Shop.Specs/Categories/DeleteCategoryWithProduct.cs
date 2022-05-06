@@ -79,7 +79,7 @@ namespace Shop.Specs.Categories
         public void ThenAnd()
         {
             expected.Should()
-                .ThrowExactly<UnableToDeleteCategoryWithProductException>();
+                .ThrowExactly<UnableToDeleteCategoryWithExistingProductException>();
         }
 
         [Fact]

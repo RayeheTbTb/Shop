@@ -100,7 +100,7 @@ namespace Shop.Services.Test.Unit.Categories
         }
 
         [Fact]
-        public void Delete_throws_UnableToDeleteCategoryWithProductException_when_given_category_has_at_least_one_product()
+        public void Delete_throws_UnableToDeleteCategoryWithExistingProductException_when_given_category_has_at_least_one_product()
         {
             var category = GenerateCategory("dummy");
             AddCategoryToDatabase(category);
@@ -109,7 +109,7 @@ namespace Shop.Services.Test.Unit.Categories
 
             Action expected = () => _sut.Delete(category.Id);
 
-            expected.Should().ThrowExactly<UnableToDeleteCategoryWithProductException>();
+            expected.Should().ThrowExactly<UnableToDeleteCategoryWithExistingProductException>();
         }
 
         [Fact]

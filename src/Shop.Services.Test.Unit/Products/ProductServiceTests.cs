@@ -141,6 +141,34 @@ namespace Shop.Services.Test.Unit.Products
             expected.Should().ThrowExactly<ProductDoesNotExistException>();
         }
 
+        [Fact]
+        public void Delete_throws_UnableToDeleteProductWithExistingPurchaseBillException_when_there_is_a_purchaseBill_for_the_product_with_given_code()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = ProductFactory.CreateProduct(category);
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            PurchaseBill purchaseBill = CreatePurchaseBill(product);
+            _dataContext.Manipulate(_ => _.PurchaseBills.Add(purchaseBill));
+
+            Action expected = () => _sut.Delete(product.Code);
+
+            expected.Should().ThrowExactly<UnableToDeleteProductWithExistingPurchaseBillException>();
+        }
+
+        private static PurchaseBill CreatePurchaseBill(Product product)
+        {
+            return new PurchaseBill
+            {
+                Product = product,
+                ProductId = product.Id,
+                Count = 10,
+                Date = DateTime.Parse("2022-04-27T05:22:05.264Z"),
+                SellerName = "name",
+                WholePrice = 10000,
+            };
+        }
+
         private static AddProductToStockDto GenerateAddProductToStockDto(Category category, int productCode)
         {
             return new AddProductToStockDto

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shop.Services.Categories.Exceptions
+namespace Shop.Services.Products.Exceptions
 {
-    public class UnableToDeleteCategoryWithProductException : Exception
+    public class UnableToDeleteProductWithExistingPurchaseBillException : Exception
     {
     }
 }

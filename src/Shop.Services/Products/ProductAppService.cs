@@ -77,6 +77,13 @@ namespace Shop.Services.Products
         public void Delete(int code)
         {
             Product product = _repository.FindByCode(code);
+            bool billForProductExists = _purchaseBillRepository.BillExistsForProduct(code);
+
+            if (billForProductExists)
+            {
+                throw new UnableToDeleteProductWithExistingPurchaseBillException();
+            }
+
             if(product == null)
             {
                 throw new ProductDoesNotExistException();

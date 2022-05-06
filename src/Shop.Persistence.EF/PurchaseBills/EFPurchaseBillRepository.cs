@@ -21,5 +21,10 @@ namespace Shop.Persistence.EF.PurchaseBills
         {
             _dataContext.PurchaseBills.Add(purchaseBill);
         }
+
+        public bool BillExistsForProduct(int code)
+        {
+            return _dataContext.PurchaseBills.Any(_ => _.Product.Code == code);
+        }
     }
 }

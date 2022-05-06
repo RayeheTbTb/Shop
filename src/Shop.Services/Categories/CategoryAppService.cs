@@ -53,7 +53,7 @@ namespace Shop.Services.Categories
 
             if (productCount > 0)
             {
-                throw new UnableToDeleteCategoryWithProductException();
+                throw new UnableToDeleteCategoryWithExistingProductException();
             }
 
             _repository.Delete(category);
