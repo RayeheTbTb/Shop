@@ -92,5 +92,19 @@ namespace Shop.Services.Products
             _repository.Delete(product);
             _unitOfWork.Commit();
         }
+
+        public void Update(int code, UpdateProductDto dto)
+        {
+            var product = _repository.FindByCode(code);
+            if (product == null)
+            {
+                throw new ProductDoesNotExistException();
+            }
+
+            product.Name = dto.Name;
+            product.MinimumInStock = dto.MinimumInStock;
+
+            _unitOfWork.Commit();
+        }
     }
 }

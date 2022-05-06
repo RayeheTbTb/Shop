@@ -107,12 +107,12 @@ namespace Shop.Services.Test.Unit.Products
 
         [Theory]
         [InlineData(2)]
-        public void AddToStock_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int code)
+        public void AddToStock_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int fakeCode)
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             AddProductToStockDto dto =
-                GenerateAddProductToStockDto(category, code);
+                GenerateAddProductToStockDto(category, fakeCode);
 
             Action expected = () => _sut.AddToStock(dto);
 
@@ -134,9 +134,9 @@ namespace Shop.Services.Test.Unit.Products
 
         [Theory]
         [InlineData(2)]
-        public void Delete_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int code)
+        public void Delete_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int fakeCode)
         {
-            Action expected = () => _sut.Delete(code);
+            Action expected = () => _sut.Delete(fakeCode);
 
             expected.Should().ThrowExactly<ProductDoesNotExistException>();
         }
@@ -154,6 +154,42 @@ namespace Shop.Services.Test.Unit.Products
             Action expected = () => _sut.Delete(product.Code);
 
             expected.Should().ThrowExactly<UnableToDeleteProductWithExistingPurchaseBillException>();
+        }
+
+        [Fact]
+        public void Update_updates_product_properly()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = ProductFactory.CreateProduct(category);
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            UpdateProductDto dto = GenerateUpdateProductDto();
+
+            _sut.Update(product.Code, dto);
+
+            var expected = _dataContext.Products.FirstOrDefault(_ => _.Code == product.Code);
+            expected.Name.Should().Be(dto.Name);
+            expected.MinimumInStock.Should().Be(dto.MinimumInStock);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void Update_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int fakeCode)
+        {
+            UpdateProductDto dto = GenerateUpdateProductDto();
+
+            Action expected = () => _sut.Update(fakeCode, dto);
+
+            expected.Should().ThrowExactly<ProductDoesNotExistException>();
+        }
+
+        private static UpdateProductDto GenerateUpdateProductDto()
+        {
+            return new UpdateProductDto
+            {
+                Name = "UpdatedDummy",
+                MinimumInStock = 10,
+            };
         }
 
         private static PurchaseBill CreatePurchaseBill(Product product)
