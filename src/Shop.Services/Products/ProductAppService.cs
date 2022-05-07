@@ -69,7 +69,7 @@ namespace Shop.Services.Products
                 Product = product,
                 ProductId = product.Id
             };
-
+            product.Price = dto.WholePrice / dto.Count;
             _repository.AddtoStock(dto.Code, dto.Count);
             _purchaseBillRepository.Add(purchaseBill);
             _unitOfWork.Commit();
