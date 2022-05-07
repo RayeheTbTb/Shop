@@ -23,12 +23,12 @@ namespace Shop.Test.Tools
             };
         }
 
-        public static Product CreateProduct(Category category, string name)
+        public static Product CreateProduct(Category category, string name, int code)
         {
             return new Product
             {
                 Name = name,
-                Code = 1,
+                Code = code,
                 MinimumInStock = 1,
                 InStockCount = 10,
                 CategoryId = category.Id

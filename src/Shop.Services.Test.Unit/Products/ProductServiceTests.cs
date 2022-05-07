@@ -73,7 +73,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category, "dummy");
+            var product = ProductFactory.CreateProduct(category, "dummy", 1);
             ProductFactory.AddProductToDatabase(product, _dataContext);
             var dto = GenerateDefineProductDto(category);
 
@@ -181,6 +181,22 @@ namespace Shop.Services.Test.Unit.Products
             Action expected = () => _sut.Update(fakeCode, dto);
 
             expected.Should().ThrowExactly<ProductDoesNotExistException>();
+        }
+
+        [Fact]
+        public void Update_throws_DuplicateProductNameInCategoryException_when_given_name_already_exists_in_the_category()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = ProductFactory.CreateProduct(category, "UpdatedDummy", 1);
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            var product2 = ProductFactory.CreateProduct(category, "dummy2", 2);
+            ProductFactory.AddProductToDatabase(product2, _dataContext);
+            UpdateProductDto dto = GenerateUpdateProductDto();
+
+            Action expected = () => _sut.Update(product2.Code, dto);
+
+            expected.Should().ThrowExactly<DuplicateProductNameInCategoryException>();
         }
 
         private static UpdateProductDto GenerateUpdateProductDto()

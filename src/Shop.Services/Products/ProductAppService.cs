@@ -101,6 +101,12 @@ namespace Shop.Services.Products
                 throw new ProductDoesNotExistException();
             }
 
+            var isNameDuplicate = _repository.IsExistNameInCategory(product.CategoryId, dto.Name);
+            if (isNameDuplicate)
+            {
+                throw new DuplicateProductNameInCategoryException();
+            }
+
             product.Name = dto.Name;
             product.MinimumInStock = dto.MinimumInStock;
 
