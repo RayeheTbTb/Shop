@@ -10,6 +10,7 @@ using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
 using Shop.Services.PurchaseBills.Contracts;
 using Shop.Services.PurchaseBills.Exceptions;
+using Shop.Services.SaleBills.Exceptions;
 using Shop.Test.Tools;
 using System;
 using System.Collections.Generic;
@@ -117,7 +118,7 @@ namespace Shop.Services.Test.Unit.Products
 
             Action expected = () => _sut.AddToStock(dto);
 
-            expected.Should().ThrowExactly<ProductDoesNotExistException>();
+            expected.Should().ThrowExactly<ProductNotFoundException>();
         }
 
         [Fact]
@@ -140,7 +141,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             Action expected = () => _sut.Delete(fakeCode);
 
-            expected.Should().ThrowExactly<ProductDoesNotExistException>();
+            expected.Should().ThrowExactly<ProductNotFoundException>();
         }
 
         [Fact]
@@ -181,7 +182,7 @@ namespace Shop.Services.Test.Unit.Products
 
             Action expected = () => _sut.Update(fakeCode, dto);
 
-            expected.Should().ThrowExactly<ProductDoesNotExistException>();
+            expected.Should().ThrowExactly<ProductNotFoundException>();
         }
 
         [Fact]
@@ -200,6 +201,133 @@ namespace Shop.Services.Test.Unit.Products
             Action expected = () => _sut.Update(product2.Code, dto);
 
             expected.Should().ThrowExactly<DuplicateProductNameInCategoryException>();
+        }
+
+        [Fact]
+        public void GetAll_returns_all_products()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk").WithCode(1).WithPrice(10000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            var expected = _sut.GetAll();
+
+            expected.Should().HaveCount(1);
+            expected.Should().Contain(_ => _.Id == product.Id);
+            expected.Should().Contain(_ => _.Name == product.Name);
+            expected.Should()
+                .Contain(_ => _.InStockCount == product.InStockCount);
+            expected.Should().Contain(_ => _.Code == product.Code);
+            expected.Should().Contain(_ => _.Price == product.Price);
+        }
+
+        [Fact]
+        public void GetPurchaseBills_returns_product_with_given_code_and_its_purchase_bills()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk").WithCode(1).WithPrice(10000)
+                .WithPurchaseBill().Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            var expected = _sut.GetPurchaseBills(product.Code);
+
+            var purchaseBills = product.PurchaseBills.FirstOrDefault();
+            expected.Id.Should().Be(product.Id);
+            expected.Name.Should().Be(product.Name);
+            expected.InStockCount.Should().Be(product.InStockCount);
+            expected.Code.Should().Be(product.Code);
+            expected.Price.Should().Be(product.Price);
+            expected.PurchaseBills.Should().HaveCount(1);
+            expected.PurchaseBills.Should()
+                .Contain(_ => _.SellerName == purchaseBills.SellerName);
+            expected.PurchaseBills.Should()
+                .Contain(_ => _.Id == purchaseBills.Id);
+            expected.PurchaseBills.Should()
+                .Contain(_ => _.Count == purchaseBills.Count);
+            expected.PurchaseBills.Should()
+                .Contain(_ => _.Date.Date == purchaseBills.Date.Date);
+            expected.PurchaseBills.Should()
+                .Contain(_ => _.WholePrice == purchaseBills.WholePrice);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void GetPurchaseBills_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int fakeCode)
+        {
+            Action expected = () => _sut.GetPurchaseBills(fakeCode);
+
+            expected.Should().ThrowExactly<ProductNotFoundException>();
+        }
+
+        [Fact]
+        public void GetPurchaseBills_throws_NoPurchaseBillsExistException_when_no_purchase_bills_exist_for_the_product_with_given_code()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk").WithCode(1).WithPrice(10000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            Action expected = () => _sut.GetPurchaseBills(product.Code);
+
+            expected.Should().ThrowExactly<NoPurchaseBillsExistException>();
+        }
+
+        [Fact]
+        public void GetSaleBills_returns_product_with_given_code_and_its_sale_bills()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk").WithCode(1).WithPrice(10000)
+                .WithSaleBill().Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            var expected = _sut.GetSaleBills(product.Code);
+
+            var saleBills = product.SaleBills.FirstOrDefault();
+            expected.Id.Should().Be(product.Id);
+            expected.Name.Should().Be(product.Name);
+            expected.InStockCount.Should().Be(product.InStockCount);
+            expected.Code.Should().Be(product.Code);
+            expected.Price.Should().Be(product.Price);
+            expected.SaleBills.Should().HaveCount(1);
+            expected.SaleBills.Should()
+                .Contain(_ => _.CustomerName == saleBills.CustomerName);
+            expected.SaleBills.Should().Contain(_ => _.Id == saleBills.Id);
+            expected.SaleBills.Should()
+                .Contain(_ => _.Count == saleBills.Count);
+            expected.SaleBills.Should()
+                .Contain(_ => _.Date.Date == saleBills.Date.Date);
+            expected.SaleBills.Should()
+                .Contain(_ => _.WholePrice == saleBills.WholePrice);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void GetSaleBills_throws_ProductDoesNotExistException_when_product_with_given_code_does_not_exist(int fakeCode)
+        {
+            Action expected = () => _sut.GetSaleBills(fakeCode);
+
+            expected.Should().ThrowExactly<ProductNotFoundException>();
+        }
+
+        [Fact]
+        public void GetSaleBills_throws_NoSaleBillsExistException_when_no_sale_bills_exist_for_the_product_with_given_code()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk").WithCode(1).WithPrice(10000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            Action expected = () => _sut.GetSaleBills(product.Code);
+
+            expected.Should().ThrowExactly<NoSaleBillsExistException>();
         }
 
         private static UpdateProductDto GenerateUpdateProductDto()

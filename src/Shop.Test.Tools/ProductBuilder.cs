@@ -77,6 +77,33 @@ namespace Shop.Test.Tools
             return this;
         }
 
+        public ProductBuilder WithSaleBill()
+        {
+            product.SaleBills.Add(new SaleBill
+            {
+                Product = product,
+                ProductId = product.Id,
+                Count = 10,
+                Date = DateTime.Parse("2022-04-27T05:22:05.264Z"),
+                CustomerName = "dummyName",
+                WholePrice = 10000,
+            });
+            return this;
+        }
+
+        public ProductBuilder WithSaleBill(string name, int count, DateTime date, int wholePrice)
+        {
+            product.SaleBills.Add(new SaleBill
+            {
+                Product = product,
+                ProductId = product.Id,
+                Count = count,
+                Date = date,
+                CustomerName = name,
+                WholePrice = wholePrice,
+            });
+            return this;
+        }
 
         public Product Build()
         {

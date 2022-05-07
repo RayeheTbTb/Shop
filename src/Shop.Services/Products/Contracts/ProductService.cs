@@ -13,5 +13,8 @@ namespace Shop.Services.Products.Contracts
         void AddToStock(AddProductToStockDto dto);
         void Delete(int code);
         void Update(int code, UpdateProductDto dto);
+        IList<GetProductDto> GetAll();
+        GetProductWithPurchaseBillsDto GetPurchaseBills(int code);
+        GetProductWithSaleBillsDto GetSaleBills(int code);
     }
 }

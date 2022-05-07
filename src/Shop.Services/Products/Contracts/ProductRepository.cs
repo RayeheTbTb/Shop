@@ -16,5 +16,9 @@ namespace Shop.Services.Products.Contracts
         Product FindByCode(int code);
         void AddtoStock(int code, int count);
         void Delete(Product product);
+        IList<GetProductDto> GetAll();
+        
+        GetProductWithPurchaseBillsDto GetPurchaseBills(int code);
+        GetProductWithSaleBillsDto GetSaleBills(int code);
     }
 }

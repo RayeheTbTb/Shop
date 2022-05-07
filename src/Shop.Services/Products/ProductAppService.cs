@@ -4,6 +4,7 @@ using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
 using Shop.Services.PurchaseBills.Contracts;
 using Shop.Services.PurchaseBills.Exceptions;
+using Shop.Services.SaleBills.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +57,7 @@ namespace Shop.Services.Products
             Product product = _repository.FindByCode(dto.Code);
             if (product == null)
             {
-                throw new ProductDoesNotExistException();
+                throw new ProductNotFoundException();
             }
 
             var purchaseBill = new PurchaseBill
@@ -86,11 +87,45 @@ namespace Shop.Services.Products
 
             if(product == null)
             {
-                throw new ProductDoesNotExistException();
+                throw new ProductNotFoundException();
             }
 
             _repository.Delete(product);
             _unitOfWork.Commit();
+        }
+        
+        public IList<GetProductDto> GetAll()
+        {
+            return _repository.GetAll();
+        }
+
+        public GetProductWithPurchaseBillsDto GetPurchaseBills(int code)
+        {
+            var product = _repository.FindByCode(code);
+            if (product == null)
+            {
+                throw new ProductNotFoundException();
+            }
+            if (product.PurchaseBills.Count() == 0)
+            {
+                throw new NoPurchaseBillsExistException();
+            }
+            return _repository.GetPurchaseBills(code);
+        }
+
+        public GetProductWithSaleBillsDto GetSaleBills(int code)
+        {
+            var product = _repository.FindByCode(code);
+            if (product == null)
+            {
+                throw new ProductNotFoundException();
+            }
+            if (product.SaleBills.Count() == 0)
+            {
+                throw new NoSaleBillsExistException();
+            }
+
+            return _repository.GetSaleBills(code);
         }
 
         public void Update(int code, UpdateProductDto dto)
@@ -98,7 +133,7 @@ namespace Shop.Services.Products
             var product = _repository.FindByCode(code);
             if (product == null)
             {
-                throw new ProductDoesNotExistException();
+                throw new ProductNotFoundException();
             }
 
             var isNameDuplicate = _repository.IsExistNameInCategory(product.CategoryId, dto.Name);

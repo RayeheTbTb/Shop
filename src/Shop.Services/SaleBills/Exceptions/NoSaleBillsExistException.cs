@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shop.Services.PurchaseBills.Exceptions
+namespace Shop.Services.SaleBills.Exceptions
 {
-    public class ProductDoesNotExistException : Exception
+    public class NoSaleBillsExistException : Exception
     {
     }
 }
