@@ -50,7 +50,7 @@ namespace Shop.Specs.Products
         {
             _category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(_category, _dataContext);
-            _product = ProductFactory.CreateProduct(_category);
+            _product = new ProductBuilder(_category).WithName("Kale Milk").Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
         }
 

@@ -56,7 +56,8 @@ namespace Shop.Specs.Products
         [And("کالایی با عنوان 'شیر کاله' در دسته بندی با عنوان 'لبنیات' وجود دارد")]
         public void GivenAnd()
         {
-            _product = ProductFactory.CreateProduct(_category, "Kale Milk", 1);
+            _product = new ProductBuilder(_category)
+                .WithName("Kale Milk").WithCode(1).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
         }
 

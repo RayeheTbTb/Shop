@@ -52,7 +52,8 @@ namespace Shop.Specs.Categories
         [And("کالایی با عنوان 'شیر کاله'و کد کالای '1' در دسته بندی با عنوان 'لبنیات' وجود دارد")]
         public void GivenAnd()
         {
-            _product = GenerateProduct();
+            _product = new ProductBuilder(_category)
+                .WithName("Kale Milk").WithCode(1).Build();
             _dataContext.Manipulate(_ => _.Products.Add(_product));
         }
 
@@ -80,19 +81,6 @@ namespace Shop.Specs.Categories
             GivenAnd();
             When();
             Then();
-        }
-
-        private Product GenerateProduct()
-        {
-            return new Product
-            {
-                Name = "Kale Milk",
-                Code = 1,
-                Category = _category,
-                CategoryId = _category.Id,
-                Price = 1000,
-                InStockCount = 5
-            };
         }
     }
 }

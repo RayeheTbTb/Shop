@@ -58,7 +58,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category);
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             var dto =
                 GenerateDefineProductDtoWithSpecificCode(category, product.Code);
@@ -73,7 +73,8 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category, "dummy", 1);
+            var product = new ProductBuilder(category)
+                .WithName("dummy").WithCode(1).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             var dto = GenerateDefineProductDto(category);
 
@@ -87,7 +88,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category);
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             AddProductToStockDto dto =
                 GenerateAddProductToStockDto(category, product.Code);
@@ -124,12 +125,13 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category);
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
 
             _sut.Delete(product.Code);
 
-            _dataContext.Products.Should().NotContain(_ => _.Code == product.Code);
+            _dataContext.Products.Should()
+                .NotContain(_ => _.Code == product.Code);
         }
 
         [Theory]
@@ -146,10 +148,9 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category);
+            var product = new ProductBuilder(category)
+                .WithPurchaseBill().Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
-            PurchaseBill purchaseBill = CreatePurchaseBill(product);
-            _dataContext.Manipulate(_ => _.PurchaseBills.Add(purchaseBill));
 
             Action expected = () => _sut.Delete(product.Code);
 
@@ -161,7 +162,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category);
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             UpdateProductDto dto = GenerateUpdateProductDto();
 
@@ -188,11 +189,13 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = ProductFactory.CreateProduct(category, "UpdatedDummy", 1);
+            var product = new ProductBuilder(category)
+                .WithName("dummy1").WithCode(1).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
-            var product2 = ProductFactory.CreateProduct(category, "dummy2", 2);
+            var product2 = new ProductBuilder(category)
+                .WithName("dummy2").WithCode(2).Build();
             ProductFactory.AddProductToDatabase(product2, _dataContext);
-            UpdateProductDto dto = GenerateUpdateProductDto();
+            UpdateProductDto dto = GenerateUpdateProductDto("dummy1");
 
             Action expected = () => _sut.Update(product2.Code, dto);
 
@@ -204,6 +207,15 @@ namespace Shop.Services.Test.Unit.Products
             return new UpdateProductDto
             {
                 Name = "UpdatedDummy",
+                MinimumInStock = 10,
+            };
+        }
+
+        private static UpdateProductDto GenerateUpdateProductDto(string name)
+        {
+            return new UpdateProductDto
+            {
+                Name = name,
                 MinimumInStock = 10,
             };
         }
