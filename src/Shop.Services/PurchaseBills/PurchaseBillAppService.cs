@@ -24,6 +24,19 @@ namespace Shop.Services.PurchaseBills
             _productRepository = productRepository;
         }
 
+        public void Delete(int billId)
+        {
+            var purchaseBill = _repository.FindById(billId);
+            if(purchaseBill == null)
+            {
+                throw new PurchaseBillNotFoundException();
+            }
+            _productRepository
+                .RemoveFromStock(purchaseBill.Product, purchaseBill.Count);
+            _repository.Delete(purchaseBill);
+            _unitOfWork.Commit();
+        }
+
         public void Update(int id, UpdatePurchaseBillDto dto)
         {
             var product = _productRepository.FindByCode(dto.ProductCode);
