@@ -108,7 +108,7 @@ namespace Shop.Services.Products
             }
             if (product.PurchaseBills.Count() == 0)
             {
-                throw new NoPurchaseBillsExistException();
+                throw new PurchaseBillNotFoundException();
             }
             return _repository.GetPurchaseBills(code);
         }

@@ -12,5 +12,6 @@ namespace Shop.Services.PurchaseBills.Contracts
     {
         void Add(PurchaseBill purchaseBill);
         bool BillExistsForProduct(int code);
+        PurchaseBill FindById(int id);
     }
 }

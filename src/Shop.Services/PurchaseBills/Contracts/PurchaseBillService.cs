@@ -9,5 +9,6 @@ namespace Shop.Services.PurchaseBills.Contracts
 {
     public interface PurchaseBillService : Service
     {
+        void Update(int id, UpdatePurchaseBillDto dto);
     }
 }

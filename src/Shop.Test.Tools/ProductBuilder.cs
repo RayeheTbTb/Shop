@@ -37,6 +37,12 @@ namespace Shop.Test.Tools
             return this;
         }
 
+        public ProductBuilder WithInStockCount(int inStockCount)
+        {
+            product.InStockCount = inStockCount;
+            return this;
+        }
+
         public ProductBuilder WithMinimumInStock(int minimumInStock)
         {
             product.MinimumInStock = minimumInStock;

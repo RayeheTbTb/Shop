@@ -264,7 +264,7 @@ namespace Shop.Services.Test.Unit.Products
         }
 
         [Fact]
-        public void GetPurchaseBills_throws_NoPurchaseBillsExistException_when_no_purchase_bills_exist_for_the_product_with_given_code()
+        public void GetPurchaseBills_throws_PurchaseBillNotFoundException_when_no_purchase_bills_exist_for_the_product_with_given_code()
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
@@ -274,7 +274,7 @@ namespace Shop.Services.Test.Unit.Products
 
             Action expected = () => _sut.GetPurchaseBills(product.Code);
 
-            expected.Should().ThrowExactly<NoPurchaseBillsExistException>();
+            expected.Should().ThrowExactly<PurchaseBillNotFoundException>();
         }
 
         [Fact]

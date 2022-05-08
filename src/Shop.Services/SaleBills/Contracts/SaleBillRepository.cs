@@ -1,4 +1,5 @@
-﻿using Shop.Infrastructure.Application;
+﻿using Shop.Entities;
+using Shop.Infrastructure.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,6 @@ namespace Shop.Services.SaleBills.Contracts
 {
     public interface SaleBillRepository : Repository
     {
+        void Add(SaleBill saleBill);
     }
 }

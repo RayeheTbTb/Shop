@@ -26,5 +26,10 @@ namespace Shop.Persistence.EF.PurchaseBills
         {
             return _dataContext.PurchaseBills.Any(_ => _.Product.Code == code);
         }
+
+        public PurchaseBill FindById(int id)
+        {
+            return _dataContext.PurchaseBills.Find(id);
+        }
     }
 }

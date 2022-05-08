@@ -20,5 +20,7 @@ namespace Shop.Services.Products.Contracts
         
         GetProductWithPurchaseBillsDto GetPurchaseBills(int code);
         GetProductWithSaleBillsDto GetSaleBills(int code);
+        Product FindById(int productId);
+        void RemoveFromStock(Product product, int count);
     }
 }
