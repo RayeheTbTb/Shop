@@ -1,6 +1,7 @@
 ﻿using Shop.Entities;
 using Shop.Infrastructure.Application;
 using Shop.Services.Products.Contracts;
+using Shop.Services.Products.Exceptions;
 using Shop.Services.PurchaseBills.Contracts;
 using Shop.Services.PurchaseBills.Exceptions;
 using System;
@@ -22,6 +23,28 @@ namespace Shop.Services.PurchaseBills
             _repository = repository;
             _unitOfWork = unitOfWork;
             _productRepository = productRepository;
+        }
+
+        public void Add(AddPurchaseBillDto dto)
+        {
+            var product = _productRepository.FindByCode(dto.ProductCode);
+            if(product == null)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            var purchaseBill = new PurchaseBill
+            {
+                Count = dto.Count,
+                WholePrice = dto.WholePrice,
+                Date = dto.Date,
+                SellerName = dto.SellerName,
+                Product = product,
+                ProductId = product.Id
+            };
+            _repository.Add(purchaseBill);
+            product.InStockCount += dto.Count;
+            _unitOfWork.Commit();
         }
 
         public void Delete(int billId)

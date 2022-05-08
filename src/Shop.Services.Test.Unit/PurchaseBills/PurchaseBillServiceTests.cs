@@ -6,6 +6,7 @@ using Shop.Persistence.EF;
 using Shop.Persistence.EF.Products;
 using Shop.Persistence.EF.PurchaseBills;
 using Shop.Services.Products.Contracts;
+using Shop.Services.Products.Exceptions;
 using Shop.Services.PurchaseBills;
 using Shop.Services.PurchaseBills.Contracts;
 using Shop.Services.PurchaseBills.Exceptions;
@@ -34,6 +35,40 @@ namespace Shop.Services.Test.Unit.PurchaseBills
             _repository = new EFPurchaseBillRepository(_dataContext);
             _productRepository = new EFProductRepository(_dataContext);
             _sut = new PurchaseBillAppService(_repository, _unitOfWork, _productRepository);
+        }
+
+        [Fact]
+        public void Add_adds_purchaseBill_properly()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk")
+                .WithCode(1).WithInStockCount(10).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            AddPurchaseBillDto dto = GenerateAddPurchaseBillDto(product.Code);
+
+            _sut.Add(dto);
+
+            var expected = _dataContext.PurchaseBills.FirstOrDefault();
+            expected.SellerName.Should().Be(dto.SellerName);
+            expected.Count.Should().Be(dto.Count);
+            expected.ProductId.Should().Be(product.Id);
+            expected.WholePrice.Should().Be(dto.WholePrice);
+            expected.Date.Date.Should().Be(dto.Date.Date);
+            var expectedProduct = _dataContext.Products.Where(_ => _.Id == product.Id).FirstOrDefault();
+            expectedProduct.InStockCount.Should().Be(20);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void Add_throws_ProductNotFoundException_when_product_with_given_code_does_not_exist(int fakeProductCode)
+        {
+            var dto = GenerateAddPurchaseBillDto(fakeProductCode);
+
+            Action expected = () => _sut.Add(dto);
+
+            expected.Should().ThrowExactly<ProductNotFoundException>();
         }
 
         [Fact]
@@ -142,6 +177,27 @@ namespace Shop.Services.Test.Unit.PurchaseBills
             expected.Date.Date.Should().Be(purchasebill.Date.Date);
             expected.Count.Should().Be(purchasebill.Count);
             expected.WholePrice.Should().Be(purchasebill.WholePrice);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void Get_throws_PurchaseBillNotFoundException_when_purchaseBill_with_given_id_does_not_exist(int fakeId)
+        {
+            Action expected = () => _sut.Get(fakeId);
+
+            expected.Should().ThrowExactly<PurchaseBillNotFoundException>();
+        }
+
+        private static AddPurchaseBillDto GenerateAddPurchaseBillDto(int productCode)
+        {
+            return new AddPurchaseBillDto
+            {
+                Count = 10,
+                Date = DateTime.Parse("2022-04-27T05:22:05.264Z"),
+                ProductCode = productCode,
+                SellerName = "seller",
+                WholePrice = 10000
+            };
         }
 
         private static UpdatePurchaseBillDto GenerateUpdatePurchaseBillDto()

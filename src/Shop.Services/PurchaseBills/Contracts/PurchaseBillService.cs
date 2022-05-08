@@ -13,5 +13,6 @@ namespace Shop.Services.PurchaseBills.Contracts
         void Delete(int billId);
         IList<GetPurchaseBillDto> GetAll();
         GetPurchaseBillDto Get(int id);
+        void Add(AddPurchaseBillDto dto);
     }
 }
