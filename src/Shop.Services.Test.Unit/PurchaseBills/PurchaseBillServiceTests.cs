@@ -39,8 +39,7 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         [Fact]
         public void Update_updates_purchaseBill_and_related_products_properly()
         {
-            var category = CategoryFactory.CreateCategory();
-            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var category = MakeCategoryInDatabase();
             var product = new ProductBuilder(category)
                 .WithName("Kale Milk").WithCode(1)
                 .WithPurchaseBill("Seller", 10,
@@ -80,8 +79,7 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         [Fact]
         public void Delete_deletes_purchaseBill_properly()
         {
-            var category = CategoryFactory.CreateCategory();
-            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var category = MakeCategoryInDatabase();
             var product = new ProductBuilder(category)
                 .WithName("Kale Milk").WithCode(1)
                 .WithPurchaseBill("Seller", 5,
@@ -102,6 +100,48 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         {
             Action expected = () => _sut.Delete(fakeId);
             expected.Should().ThrowExactly<PurchaseBillNotFoundException>();
+        }
+
+        [Fact]
+        public void GetAll_returns_all_purchaseBills()
+        {
+            var category = MakeCategoryInDatabase();
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk").WithCode(1)
+                .WithPurchaseBill("Seller", 5,
+                DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            var expected = _sut.GetAll();
+
+            var purchasebill = product.PurchaseBills.First();
+            expected.Should().HaveCount(1);
+            expected.Should().Contain(_ => _.ProductId == product.Id);
+            expected.Should().Contain(_ => _.SellerName == purchasebill.SellerName);
+            expected.Should().Contain(_ => _.Date.Date == purchasebill.Date.Date);
+            expected.Should().Contain(_ => _.Count == purchasebill.Count);
+            expected.Should().Contain(_ => _.WholePrice == purchasebill.WholePrice);
+        }
+
+        [Fact]
+        public void Get_returns_purchaseBill_with_given_id()
+        {
+            var category = MakeCategoryInDatabase();
+            var product = new ProductBuilder(category)
+                .WithName("Kale Milk").WithCode(1)
+                .WithPurchaseBill("Seller", 5,
+                DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            var billId = product.PurchaseBills.First().Id;
+
+            var expected = _sut.Get(billId);
+
+            var purchasebill = product.PurchaseBills.First();
+            expected.ProductId.Should().Be(product.Id);
+            expected.SellerName.Should().Be(purchasebill.SellerName);
+            expected.Date.Date.Should().Be(purchasebill.Date.Date);
+            expected.Count.Should().Be(purchasebill.Count);
+            expected.WholePrice.Should().Be(purchasebill.WholePrice);
         }
 
         private static UpdatePurchaseBillDto GenerateUpdatePurchaseBillDto()
@@ -126,6 +166,13 @@ namespace Shop.Services.Test.Unit.PurchaseBills
                 SellerName = "Seller2",
                 ProductCode = newProduct.Code
             };
+        }
+
+        private Category MakeCategoryInDatabase()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            return category;
         }
     }
 }

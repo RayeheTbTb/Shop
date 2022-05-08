@@ -37,6 +37,21 @@ namespace Shop.Services.PurchaseBills
             _unitOfWork.Commit();
         }
 
+        public GetPurchaseBillDto Get(int id)
+        {
+            var isBillExist = _repository.IsExistPurchaseBill(id);
+            if (!isBillExist)
+            {
+                throw new PurchaseBillNotFoundException();
+            }
+            return _repository.Get(id);
+        }
+
+        public IList<GetPurchaseBillDto> GetAll()
+        {
+            return _repository.GetAll();
+        }
+
         public void Update(int id, UpdatePurchaseBillDto dto)
         {
             var product = _productRepository.FindByCode(dto.ProductCode);

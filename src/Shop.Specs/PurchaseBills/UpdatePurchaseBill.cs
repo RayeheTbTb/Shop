@@ -46,7 +46,7 @@ namespace Shop.Specs.PurchaseBills
             _sut = new PurchaseBillAppService(_repository, _unitOfWork, _productRepository);
         }
 
-        [Given("سند خریدی به تاریخ '01 / 01 / 1400' به نام 'فروشنده' برای کالای با عنوان 'شیر کاله' به تعداد '10' با مجموع قیمت '10000 تومان' در تاریخچه فروشگاه وجود دارد")]
+        [Given("سند خریدی به تاریخ '01 / 01 / 1400' به نام 'فروشنده' برای کالای با عنوان 'شیر کاله' به تعداد '10' با مجموع قیمت '10000 تومان' فهرست سند ورودی کالا وجود دارد")]
         public void Given()
         {
             var category = CategoryFactory.CreateCategory();
@@ -77,7 +77,7 @@ namespace Shop.Specs.PurchaseBills
             _sut.Update(_billId, _dto);
         }
 
-        [Then("سند خریدی به نام 'فروشنده2' برای کالای با عنوان 'ماست کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در تاریخچه فروشگاه باید وجود داشته باشد")]
+        [Then("سند خریدی به نام 'فروشنده2' برای کالای با عنوان 'ماست کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در فهرست سند ورودی کالا باید وجود داشته باشد")]
         public void Then()
         {
             var expected = _dataContext.PurchaseBills.FirstOrDefault(_ => _.Id == _billId);

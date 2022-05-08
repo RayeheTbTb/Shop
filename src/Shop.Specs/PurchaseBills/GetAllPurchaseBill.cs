@@ -19,13 +19,13 @@ using static Shop.Specs.BDDHelper;
 
 namespace Shop.Specs.PurchaseBills
 {
-    [Scenario("حذف سند خرید")]
+    [Scenario("نمایش سند خرید")]
     [Feature("",
         AsA = "فروشنده",
         IWantTo = " سند خرید را مدیریت کنم",
         InOrderTo = "سند خرید خود را تعریف کنم"
     )]
-    public class DeletePurchaseBill : EFDataContextDatabaseFixture
+    public class GetAllPurchaseBill : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
         private readonly PurchaseBillRepository _repository;
@@ -33,8 +33,8 @@ namespace Shop.Specs.PurchaseBills
         private readonly ProductRepository _productRepository;
         private readonly PurchaseBillService _sut;
         private Product _product;
-        private int _billId;
-        public DeletePurchaseBill(ConfigurationFixture configuration) : base(configuration)
+        private IList<GetPurchaseBillDto> expected;
+        public GetAllPurchaseBill(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
             _repository = new EFPurchaseBillRepository(_dataContext);
@@ -53,21 +53,24 @@ namespace Shop.Specs.PurchaseBills
                 .WithPurchaseBill("Seller", 5,
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
-            _billId = _product.PurchaseBills.First().Id;
         }
 
-        [When("سند خرید را حذف میکنم")]
+        [When("درخواست مشاهده فهرست اسناد ورودی کالا ها را میدهم")]
         public void When()
         {
-            _sut.Delete(_billId);
+            expected = _sut.GetAll();
         }
 
-        [Then("سند خریدی به تاریخ '01 / 01 / 1400' به نام 'فروشنده' برای کالای با عنوان 'شیر کاله' به تعداد '10' با مجموع قیمت '10000 تومان' در فهرست سند ورودی کالا نباید وجود داشته باشد")]
+        [Then("سند خریدی به تاریخ '01 / 01 / 1400' به نام 'فروشنده' برای کالای با عنوان 'شیر کاله' به تعداد '5' با مجموع قیمت '5000 تومان' باید نمایش داده شود")]
         public void Then()
         {
-            _dataContext.PurchaseBills.Should().NotContain(_ => _.Id == _billId);
-            _dataContext.Products.FirstOrDefault(_ => _.Id == _product.Id)
-                .InStockCount.Should().Be(5);
+            var purchasebill = _product.PurchaseBills.First();
+            expected.Should().HaveCount(1);
+            expected.Should().Contain(_ => _.ProductId == _product.Id);
+            expected.Should().Contain(_ => _.SellerName == purchasebill.SellerName);
+            expected.Should().Contain(_ => _.Date.Date == purchasebill.Date.Date);
+            expected.Should().Contain(_ => _.Count == purchasebill.Count);
+            expected.Should().Contain(_ => _.WholePrice == purchasebill.WholePrice);
         }
 
         [Fact]
