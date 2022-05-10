@@ -51,7 +51,7 @@ namespace Shop.Specs.Products
             ProductFactory.AddProductToDatabase(_product, _dataContext);
         }
 
-        [When("درخواست مشاهده فهرست کالا ها را میدهم")]
+        [When("درخواست مشاهده کالا را میدهم")]
         public void When()
         {
             expected = _sut.Get(_product.Code);

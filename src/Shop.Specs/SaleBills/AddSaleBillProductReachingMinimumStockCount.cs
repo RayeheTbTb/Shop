@@ -7,6 +7,7 @@ using Shop.Persistence.EF.SaleBills;
 using Shop.Services.Products.Contracts;
 using Shop.Services.SaleBills;
 using Shop.Services.SaleBills.Contracts;
+using Shop.Services.SaleBills.Exceptions;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
@@ -22,7 +23,7 @@ namespace Shop.Specs.SaleBills
         IWantTo = " فاکتور فروش را مدیریت کنم",
         InOrderTo = "فاکتور فروش خود را تعریف کنم"
     )]
-    public class AddSaleBill : EFDataContextDatabaseFixture
+    public class AddSaleBillProductReachingMinimumStockCount : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
         private readonly SaleBillRepository _repository;
@@ -31,13 +32,14 @@ namespace Shop.Specs.SaleBills
         private readonly SaleBillService _sut;
         private Product _product;
         private AddSaleBillDto _dto;
-        public AddSaleBill(ConfigurationFixture configuration) : base(configuration)
+        Action expected;
+        public AddSaleBillProductReachingMinimumStockCount(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
             _repository = new EFSaleBillRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _productRepository = new EFProductRepository(_dataContext);
-            _sut = new SaleBillAppService(_repository, _unitOfWork, 
+            _sut = new SaleBillAppService(_repository, _unitOfWork,
                 _productRepository);
         }
 
@@ -47,7 +49,7 @@ namespace Shop.Specs.SaleBills
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             _product = new ProductBuilder(category)
-                .WithName("Kale Milk")
+                .WithName("Kale Milk").WithMinimumInStock(6)
                 .WithCode(1).WithInStockCount(10).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
         }
@@ -70,26 +72,20 @@ namespace Shop.Specs.SaleBills
                 Date = DateTime.Parse("2022-04-27T05:22:05.264Z")
             };
 
-            _sut.Add(_dto);
+            expected = () => _sut.Add(_dto);
         }
 
-        [Then("فاکتور فروش کالایی با کد '1' با تعداد '5' در تاریخ '21 / 02 / 1400' در فهرست فاکتور فروش کالا باید وجود داشته باشد")]
+        [Then("هیچ فاکتور فروش کالایی در فهرست فاکتور فروش کالا نباید وجود داشته باشد")]
         public void Then()
         {
-            var expected = _dataContext.SaleBills.FirstOrDefault();
-            expected.CustomerName.Should().Be(_dto.CustomerName);
-            expected.Count.Should().Be(_dto.Count);
-            expected.ProductId.Should().Be(_product.Id);
-            expected.WholePrice.Should().Be(_dto.WholePrice);
-            expected.Date.Date.Should().Be(_dto.Date.Date);
+            _dataContext.SaleBills.Should().HaveCount(0);
         }
 
-        [And("کالایی با عنوان 'شیر کاله' و کد کالای '1' موجودی '5' عدد در فهرست کالا ها باید وجود داشته باشد")]
+        [And("خطایی با عنوان 'تعداد کالا به حداقل موجودی رسیده است ' باید رخ دهد")]
         public void ThenAnd()
         {
-            var expectedProduct = _dataContext.Products
-                .Where(_ => _.Id == _product.Id).FirstOrDefault();
-            expectedProduct.InStockCount.Should().Be(5);
+            expected.Should().ThrowExactly<ProductReachedMinimumInStockCountException>();
+
         }
 
         [Fact]

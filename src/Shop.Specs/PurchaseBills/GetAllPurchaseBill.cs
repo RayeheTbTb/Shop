@@ -17,7 +17,7 @@ using static Shop.Specs.BDDHelper;
 
 namespace Shop.Specs.PurchaseBills
 {
-    [Scenario("نمایش سند خرید")]
+    [Scenario("نمایش اسناد خرید")]
     [Feature("",
         AsA = "فروشنده",
         IWantTo = " سند خرید را مدیریت کنم",

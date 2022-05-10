@@ -7,22 +7,26 @@ using Shop.Persistence.EF.SaleBills;
 using Shop.Services.Products.Contracts;
 using Shop.Services.SaleBills;
 using Shop.Services.SaleBills.Contracts;
+using Shop.Services.SaleBills.Exceptions;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
 namespace Shop.Specs.SaleBills
 {
-    [Scenario("ویرایش فاکتور فروش")]
+    [Scenario("ویرایش  فاکتور فروش")]
     [Feature("",
         AsA = "فروشنده",
         IWantTo = " فاکتور فروش را مدیریت کنم",
         InOrderTo = "فاکتور فروش خود را تعریف کنم"
     )]
-    public class UpdateSaleBill : EFDataContextDatabaseFixture
+    public class UpdateSaleBillProductReachingMinimumStockCount : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
         private readonly SaleBillRepository _repository;
@@ -31,9 +35,10 @@ namespace Shop.Specs.SaleBills
         private readonly SaleBillService _sut;
         private Product _product;
         private Product _product2;
-        private int _billId;
         private UpdateSaleBillDto _dto;
-        public UpdateSaleBill(ConfigurationFixture configuration) : base(configuration)
+        private int _billId;
+        Action expected;
+        public UpdateSaleBillProductReachingMinimumStockCount(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
             _repository = new EFSaleBillRepository(_dataContext);
@@ -56,6 +61,7 @@ namespace Shop.Specs.SaleBills
             ProductFactory.AddProductToDatabase(_product, _dataContext);
             _product2 = new ProductBuilder(category)
                 .WithName("Kale Yogurt").WithCode(2)
+                .WithMinimumInStock(6)
                 .WithInStockCount(10).Build();
             ProductFactory.AddProductToDatabase(_product2, _dataContext);
             _billId = _product.SaleBills.First().Id;
@@ -73,23 +79,29 @@ namespace Shop.Specs.SaleBills
                 ProductCode = _product2.Code
             };
 
-            _sut.Update(_billId, _dto);
+            expected = () => _sut.Update(_billId, _dto);
         }
 
-        [Then("فاکتور فروشی به نام 'خریدار2' برای کالای با عنوان 'ماست کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در فهرست فاکتور فروش کالا باید وجود داشته باشد")]
+        [Then("فاکتور فروشی به تاریخ '01 / 01 / 1400' به نام 'خریدار' برای کالای با عنوان 'شیر کاله' به تعداد '10' با مجموع قیمت '10000 تومان' در فهرست فاکتور فروش کالا باید وجود داشته باشد")]
         public void Then()
         {
-            var expected = _dataContext.SaleBills
+            var expectedSaleBill = _dataContext.SaleBills
                 .FirstOrDefault(_ => _.Id == _billId);
+            var saleBill = _product.SaleBills.First();
 
-            expected.ProductId.Should().Be(_product2.Id);
-            expected.CustomerName.Should().Be(_dto.CustomerName);
-            expected.Product.Name.Should().Be(_product2.Name);
-            expected.Count.Should().Be(_dto.Count);
-            expected.WholePrice.Should().Be(_dto.WholePrice);
-            _product.SaleBills.Should().NotContain(_ => _.Id == _billId);
-            _product.InStockCount.Should().Be(25);
-            _product2.InStockCount.Should().Be(5);
+            expectedSaleBill.ProductId.Should().Be(_product.Id);
+            expectedSaleBill.CustomerName.Should().Be(saleBill.CustomerName);
+            expectedSaleBill.Product.Name.Should().Be(_product.Name);
+            expectedSaleBill.Count.Should().Be(saleBill.Count);
+            expectedSaleBill.WholePrice.Should().Be(saleBill.WholePrice);
+            _product2.SaleBills.Should().NotContain(_ => _.Id == _billId);
+            _product.InStockCount.Should().Be(20);
+        }
+
+        [And("خطایی با عنوان 'تعداد کالا به حداقل موجودی رسیده است ' باید رخ دهد")]
+        public void ThenAnd()
+        {
+            expected.Should().ThrowExactly<ProductReachedMinimumInStockCountException>();
         }
 
         [Fact]
@@ -98,6 +110,7 @@ namespace Shop.Specs.SaleBills
             Given();
             When();
             Then();
+            ThenAnd();
         }
     }
 }
