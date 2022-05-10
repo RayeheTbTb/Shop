@@ -56,7 +56,8 @@ namespace Shop.Persistence.EF.Categories
                     Code = _.Code,
                     Name = _.Name,
                     InStockCount = _.InStockCount,
-                    Price = _.Price
+                    Price = _.Price,
+                    CategoryId = _.CategoryId
                 }).ToList();
         }
 

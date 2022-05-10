@@ -98,7 +98,18 @@ namespace Shop.Services.Products
             _repository.Delete(product);
             _unitOfWork.Commit();
         }
-        
+
+        public GetProductDto Get(int code)
+        {
+            var isProductExist = _repository.IsExistCode(code);
+            if (!isProductExist)
+            {
+                throw new ProductNotFoundException();
+            }
+
+            return _repository.Get(code);
+        }
+
         public IList<GetProductDto> GetAll()
         {
             return _repository.GetAll();

@@ -74,7 +74,7 @@ namespace Shop.Services.Test.Unit.Products
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category)
-                .WithName("dummy").WithCode(1).Build();
+                .WithName("dummy").Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             var dto = GenerateDefineProductDto(category);
 
@@ -210,14 +210,14 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1).WithPrice(10000).Build();
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
 
             var expected = _sut.GetAll();
 
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.Id == product.Id);
+            expected.Should().Contain(_ => _.CategoryId == product.CategoryId);
             expected.Should().Contain(_ => _.Name == product.Name);
             expected.Should()
                 .Contain(_ => _.InStockCount == product.InStockCount);
@@ -231,8 +231,7 @@ namespace Shop.Services.Test.Unit.Products
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1).WithPrice(10000)
-                .WithPurchaseBill().Build();
+                .WithCode(1).WithPurchaseBill().Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
 
             var expected = _sut.GetPurchaseBills(product.Code);
@@ -270,8 +269,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1).WithPrice(10000).Build();
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
 
             Action expected = () => _sut.GetPurchaseBills(product.Code);
@@ -284,9 +282,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1).WithPrice(10000)
-                .WithSaleBill().Build();
+            var product = new ProductBuilder(category).WithSaleBill().Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
 
             var expected = _sut.GetSaleBills(product.Code);
@@ -323,8 +319,7 @@ namespace Shop.Services.Test.Unit.Products
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1).WithPrice(10000).Build();
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
 
             Action expected = () => _sut.GetSaleBills(product.Code);

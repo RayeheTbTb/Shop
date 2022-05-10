@@ -12,5 +12,6 @@ namespace Shop.Services.Products.Contracts
         IList<GetProductDto> GetAll();
         GetProductWithPurchaseBillsDto GetPurchaseBills(int code);
         GetProductWithSaleBillsDto GetSaleBills(int code);
+        GetProductDto Get(int code);
     }
 }

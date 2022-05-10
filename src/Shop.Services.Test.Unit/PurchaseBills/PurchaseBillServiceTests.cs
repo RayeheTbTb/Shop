@@ -41,9 +41,7 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1)
-                .WithInStockCount(10).Build();
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             AddPurchaseBillDto dto = GenerateAddPurchaseBillDto(product.Code);
 
@@ -115,7 +113,6 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         {
             var category = MakeCategoryInDatabase();
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1)
                 .WithPurchaseBill("Seller", 5,
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
@@ -142,7 +139,6 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         {
             var category = MakeCategoryInDatabase();
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1)
                 .WithPurchaseBill("Seller", 5,
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
@@ -166,7 +162,6 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         {
             var category = MakeCategoryInDatabase();
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk").WithCode(1)
                 .WithPurchaseBill("Seller", 5,
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);

@@ -7,6 +7,7 @@
         public int Code { get; set; }
         public int Price { get; set; }
         public int InStockCount { get; set; }
+        public int CategoryId { get; set; }
 
     }
 }

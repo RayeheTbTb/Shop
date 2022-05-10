@@ -65,6 +65,7 @@ namespace Shop.Specs.Categories
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.Name == _product.Name);
             expected.Should().Contain(_ => _.Id == _product.Id);
+            expected.Should().Contain(_ => _.CategoryId == _product.CategoryId);
             expected.Should().Contain(_ => _.Code == _product.Code);
             expected.Should().Contain(_ => _.Price == _product.Price);
             expected.Should()

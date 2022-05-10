@@ -39,6 +39,12 @@ namespace Shop.RestAPI.Controllers
             return _service.GetAll();
         }
 
+        [HttpGet("{code}")]
+        public GetProductDto Get(int code)
+        {
+            return _service.Get(code);
+        }
+
         [HttpGet("/purchasebill/{code}")]
         public GetProductWithPurchaseBillsDto GetPurchaseBills(int code)
         {

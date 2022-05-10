@@ -139,6 +139,7 @@ namespace Shop.Services.Test.Unit.Categories
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.Name == product.Name);
             expected.Should().Contain(_ => _.Id == product.Id);
+            expected.Should().Contain(_ => _.CategoryId == product.CategoryId);
             expected.Should().Contain(_ => _.Code == product.Code);
             expected.Should().Contain(_ => _.Price == product.Price);
             expected.Should()

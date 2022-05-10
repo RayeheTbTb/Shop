@@ -43,6 +43,19 @@ namespace Shop.Persistence.EF.Products
             return _dataContext.Products.Find(productId);
         }
 
+        public GetProductDto Get(int code)
+        {
+            return _dataContext.Products.Where(_ => _.Code == code).Select(_ => new GetProductDto
+            {
+                Code = _.Code,
+                CategoryId = _.CategoryId,
+                Id = _.Id,
+                InStockCount = _.InStockCount,
+                Name = _.Name,
+                Price = _.Price
+            }).FirstOrDefault();
+        }
+
         public IList<GetProductDto> GetAll()
         {
             return _dataContext.Products.Select(_ => new GetProductDto
@@ -51,7 +64,8 @@ namespace Shop.Persistence.EF.Products
                 Price = _.Price,
                 InStockCount = _.InStockCount,
                 Code = _.Code,
-                Id = _.Id
+                Id = _.Id,
+                CategoryId = _.CategoryId
             }).ToList();
         }
 
