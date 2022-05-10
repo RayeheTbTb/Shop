@@ -75,6 +75,16 @@ namespace Shop.Services.SaleBills
             _unitOfWork.Commit();
         }
 
+        public GetSaleBillDto Get(int id)
+        {
+            bool isBillExist = _repository.IsExistBill(id);
+            if (!isBillExist)
+            {
+                throw new SaleBillNotFoundException();
+            }
+            return _repository.Get(id);
+        }
+
         public IList<GetSaleBillDto> GetAll()
         {
             return _repository.GetAll();

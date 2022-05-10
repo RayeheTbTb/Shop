@@ -14,5 +14,7 @@ namespace Shop.Services.SaleBills.Contracts
         SaleBill FindById(int id);
         void Delete(SaleBill saleBill);
         IList<GetSaleBillDto> GetAll();
+        bool IsExistBill(int id);
+        GetSaleBillDto Get(int id);
     }
 }

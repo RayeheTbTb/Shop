@@ -139,7 +139,7 @@ namespace Shop.Services.Test.Unit.SaleBills
 
         [Theory]
         [InlineData(2)]
-        public void Delete_throws_SaleBillNotFoundException_when_no_saleBill_with_given_id_exists(int fakeId)
+        public void Delete_throws_SaleBillNotFoundException_when_saleBill_with_given_id__does_not_exist(int fakeId)
         {
             Action expected = () => _sut.Delete(fakeId);
 
@@ -268,6 +268,36 @@ namespace Shop.Services.Test.Unit.SaleBills
             expected.Should().Contain(_ => _.Date.Date == purchasebill.Date.Date);
             expected.Should().Contain(_ => _.Count == purchasebill.Count);
             expected.Should().Contain(_ => _.WholePrice == purchasebill.WholePrice);
+        }
+
+        [Fact]
+        public void Get_returns_saleBill_with_given_id()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithSaleBill("Customer", 5,
+                DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            var billId = product.SaleBills.First().Id;
+
+            var expected = _sut.Get(billId);
+
+            var saleBill = product.SaleBills.First();
+            expected.ProductId.Should().Be(product.Id);
+            expected.CustomerName.Should().Be(saleBill.CustomerName);
+            expected.Date.Date.Should().Be(saleBill.Date.Date);
+            expected.Count.Should().Be(saleBill.Count);
+            expected.WholePrice.Should().Be(saleBill.WholePrice);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void Get_throws_SaleBillNotFoundException_when_saleBill_with_given_id_does_not_exist(int fakeId)
+        {
+            Action expected = () => _sut.Get(fakeId);
+
+            expected.Should().ThrowExactly<SaleBillNotFoundException>();
         }
 
         private static UpdateSaleBillDto GenerateUpdateSaleBillDto(Product product)

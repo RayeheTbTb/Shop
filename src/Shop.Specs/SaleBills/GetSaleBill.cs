@@ -25,7 +25,7 @@ namespace Shop.Specs.SaleBills
         IWantTo = " فاکتور فروش را مدیریت کنم",
         InOrderTo = "فاکتور فروش خود را تعریف کنم"
     )]
-    public class GetAllSaleBill : EFDataContextDatabaseFixture
+    public class GetSaleBill : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
         private readonly SaleBillRepository _repository;
@@ -33,8 +33,9 @@ namespace Shop.Specs.SaleBills
         private readonly ProductRepository _productRepository;
         private readonly SaleBillService _sut;
         private Product _product;
-        private IList<GetSaleBillDto> expected;
-        public GetAllSaleBill(ConfigurationFixture configuration) : base(configuration)
+        private int _billId;
+        private GetSaleBillDto expected;
+        public GetSaleBill(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
             _repository = new EFSaleBillRepository(_dataContext);
@@ -51,29 +52,28 @@ namespace Shop.Specs.SaleBills
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             _product = new ProductBuilder(category)
                 .WithName("Kale Milk").WithCode(1)
-                .WithInStockCount(5)
                 .WithSaleBill("Customer", 5,
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
-            
+            _billId = _product.SaleBills.First().Id;
+
         }
 
-        [When("درخواست مشاهده فهرست فاکتورهای فروش کالا ها را میدهم")]
+        [When("درخواست مشاهده فاکتور فروش کالا را میدهم")]
         public void When()
         {
-            expected = _sut.GetAll();
+            expected = _sut.Get(_billId);
         }
 
         [Then("فاکتور فروشی به تاریخ '01 / 01 / 1400' به نام 'خریدار' برای کالای با عنوان 'شیر کاله' به تعداد '5' با مجموع قیمت '5000 تومان' باید نمایش داده شود")]
         public void Then()
         {
             var saleBill = _product.SaleBills.First();
-            expected.Should().HaveCount(1);
-            expected.Should().Contain(_ => _.ProductId == _product.Id);
-            expected.Should().Contain(_ => _.CustomerName == saleBill.CustomerName);
-            expected.Should().Contain(_ => _.Date.Date == saleBill.Date.Date);
-            expected.Should().Contain(_ => _.Count == saleBill.Count);
-            expected.Should().Contain(_ => _.WholePrice == saleBill.WholePrice);
+            expected.ProductId.Should().Be(_product.Id);
+            expected.CustomerName.Should().Be(saleBill.CustomerName);
+            expected.Date.Date.Should().Be(saleBill.Date.Date);
+            expected.Count.Should().Be(saleBill.Count);
+            expected.WholePrice.Should().Be(saleBill.WholePrice);
         }
 
         [Fact]

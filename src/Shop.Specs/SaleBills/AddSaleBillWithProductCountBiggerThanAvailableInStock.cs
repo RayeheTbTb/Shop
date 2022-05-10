@@ -65,7 +65,7 @@ namespace Shop.Specs.SaleBills
         [When("فاکتور فروش کالایی برای کالایی به نام 'خریدار' با کد '1' با تعداد '11' با مجموع قیمت '50000 تومان' در تاریخ '21 / 02 / 1400' وارد میکنیم")]
         public void When()
         {
-            AddSaleBillDto dto = new AddSaleBillDto
+            var dto = new AddSaleBillDto
             {
                 Count = 11,
                 CustomerName = "Customer",

@@ -59,7 +59,7 @@ namespace Shop.Specs.PurchaseBills
 
         }
 
-        [When("درخواست مشاهده سند خرید کالا ها را میدهم")]
+        [When("درخواست مشاهده سند خرید کالا را میدهم")]
         public void When()
         {
             expected = _sut.Get(_billId);
