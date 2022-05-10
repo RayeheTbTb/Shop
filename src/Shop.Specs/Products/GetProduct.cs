@@ -32,6 +32,7 @@ namespace Shop.Specs.Products
         GetProductDto expected;
         public GetProduct(ConfigurationFixture configuration) : base(configuration)
         {
+            _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _purchaseBillRepository =

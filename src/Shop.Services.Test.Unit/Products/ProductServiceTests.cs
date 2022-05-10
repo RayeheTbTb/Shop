@@ -226,6 +226,33 @@ namespace Shop.Services.Test.Unit.Products
         }
 
         [Fact]
+        public void Get_return_product_with_given_code()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+            var expected = _sut.Get(product.Code);
+
+            expected.Id.Should().Be(product.Id);
+            expected.CategoryId.Should().Be(product.CategoryId);
+            expected.Name.Should().Be(product.Name);
+            expected.InStockCount.Should().Be(product.InStockCount);
+            expected.Code.Should().Be(product.Code);
+            expected.Price.Should().Be(product.Price);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void Get_throws_ProductNotFoundException_when_product_with_given_code_does_not_exist(int fakeCode)
+        {
+            Action expected = () => _sut.Get(fakeCode);
+
+            expected.Should().ThrowExactly<ProductNotFoundException>();
+        }
+
+        [Fact]
         public void GetPurchaseBills_returns_product_with_given_code_and_its_purchase_bills()
         {
             var category = CategoryFactory.CreateCategory();
