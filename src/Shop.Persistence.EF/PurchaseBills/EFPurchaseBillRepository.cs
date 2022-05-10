@@ -39,28 +39,30 @@ namespace Shop.Persistence.EF.PurchaseBills
 
         public GetPurchaseBillDto Get(int id)
         {
-            return _dataContext.PurchaseBills.Where(_ => _.Id == id).Select(_ => new GetPurchaseBillDto
-            {
-                Count = _.Count,
-                Id = _.Id,
-                WholePrice = _.WholePrice,
-                Date = _.Date,
-                SellerName = _.SellerName,
-                ProductId = _.ProductId
-            }).FirstOrDefault();
+            return _dataContext.PurchaseBills.Where(_ => _.Id == id)
+                .Select(_ => new GetPurchaseBillDto
+                {
+                    Count = _.Count,
+                    Id = _.Id,
+                    WholePrice = _.WholePrice,
+                    Date = _.Date,
+                    SellerName = _.SellerName,
+                    ProductId = _.ProductId
+                }).FirstOrDefault();
         }
 
         public IList<GetPurchaseBillDto> GetAll()
         {
-            return _dataContext.PurchaseBills.Select(_ => new GetPurchaseBillDto
-            {
-                ProductId = _.ProductId,
-                SellerName = _.SellerName,
-                WholePrice = _.WholePrice,
-                Count = _.Count,
-                Date = _.Date,
-                Id = _.Id
-            }).ToList();
+            return _dataContext.PurchaseBills
+                .Select(_ => new GetPurchaseBillDto
+                {
+                    ProductId = _.ProductId,
+                    SellerName = _.SellerName,
+                    WholePrice = _.WholePrice,
+                    Count = _.Count,
+                    Date = _.Date,
+                    Id = _.Id
+                }).ToList();
         }
 
         public bool IsExistPurchaseBill(int id)

@@ -31,11 +31,13 @@ namespace Shop.Services.Test.Unit.Products
 
         public ProductServiceTests()
         {
-            _dataContext = new EFInMemoryDatabase().CreateDataContext<EFDataContext>();
+            _dataContext = new EFInMemoryDatabase()
+                .CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _repository = new EFProductRepository(_dataContext);
             _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
+            _sut = new ProductAppService(_repository, _unitOfWork, 
+                _purchaseBillRepository);
         }
 
         [Fact]
@@ -81,7 +83,8 @@ namespace Shop.Services.Test.Unit.Products
 
             Action expected = () => _sut.Add(dto);
 
-            expected.Should().ThrowExactly<DuplicateProductNameInCategoryException>();
+            expected.Should()
+                .ThrowExactly<DuplicateProductNameInCategoryException>();
         }
 
         [Fact]
@@ -96,9 +99,8 @@ namespace Shop.Services.Test.Unit.Products
 
             _sut.AddToStock(dto);
 
-            _dataContext.Products
-                .FirstOrDefault(_ => _.Code == product.Code).InStockCount
-                .Should().Be(20);
+            _dataContext.Products.FirstOrDefault(_ => _.Code == product.Code)
+                .InStockCount.Should().Be(20);
             var expected = _dataContext.PurchaseBills.FirstOrDefault();
             expected.SellerName.Should().Be(dto.SellerName);
             expected.Date.Should().Be(dto.Date);
@@ -155,7 +157,8 @@ namespace Shop.Services.Test.Unit.Products
 
             Action expected = () => _sut.Delete(product.Code);
 
-            expected.Should().ThrowExactly<UnableToDeleteProductWithExistingPurchaseBillException>();
+            expected.Should()
+                .ThrowExactly<UnableToDeleteProductWithExistingPurchaseBillException>();
         }
 
         [Fact]
@@ -169,7 +172,8 @@ namespace Shop.Services.Test.Unit.Products
 
             _sut.Update(product.Code, dto);
 
-            var expected = _dataContext.Products.FirstOrDefault(_ => _.Code == product.Code);
+            var expected = _dataContext.Products
+                .FirstOrDefault(_ => _.Code == product.Code);
             expected.Name.Should().Be(dto.Name);
             expected.MinimumInStock.Should().Be(dto.MinimumInStock);
         }
@@ -200,7 +204,8 @@ namespace Shop.Services.Test.Unit.Products
 
             Action expected = () => _sut.Update(product2.Code, dto);
 
-            expected.Should().ThrowExactly<DuplicateProductNameInCategoryException>();
+            expected.Should()
+                .ThrowExactly<DuplicateProductNameInCategoryException>();
         }
 
         [Fact]
@@ -345,19 +350,6 @@ namespace Shop.Services.Test.Unit.Products
             {
                 Name = name,
                 MinimumInStock = 10,
-            };
-        }
-
-        private static PurchaseBill CreatePurchaseBill(Product product)
-        {
-            return new PurchaseBill
-            {
-                Product = product,
-                ProductId = product.Id,
-                Count = 10,
-                Date = DateTime.Parse("2022-04-27T05:22:05.264Z"),
-                SellerName = "name",
-                WholePrice = 10000,
             };
         }
 

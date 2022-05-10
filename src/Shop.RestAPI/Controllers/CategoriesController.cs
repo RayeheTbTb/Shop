@@ -41,7 +41,7 @@ namespace Shop.RestAPI.Controllers
             return _service.GetProducts(id);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public void Delete(int id)
         {
             _service.Delete(id);

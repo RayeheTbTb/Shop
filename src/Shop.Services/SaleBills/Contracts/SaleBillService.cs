@@ -9,5 +9,6 @@ namespace Shop.Services.SaleBills.Contracts
 {
     public interface SaleBillService : Service
     {
+        void Add(AddSaleBillDto dto);
     }
 }

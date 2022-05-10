@@ -25,7 +25,8 @@ namespace Shop.Services.Test.Unit.Categories
 
         public CategoryServiceTests()
         {
-            _dataContext = new EFInMemoryDatabase().CreateDataContext<EFDataContext>();
+            _dataContext = new EFInMemoryDatabase()
+                .CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _repository = new EFCategoryRepository(_dataContext);
             _sut = new CategoryAppService(_repository, _unitOfWork);
@@ -62,7 +63,8 @@ namespace Shop.Services.Test.Unit.Categories
 
             _sut.Update(category.Id, dto);
 
-            var expected = _dataContext.Categories.FirstOrDefault(_ => _.Id == category.Id);
+            var expected = _dataContext.Categories
+                .FirstOrDefault(_ => _.Id == category.Id);
             expected.Title.Should().Be(dto.Title);
         }
 
@@ -109,7 +111,8 @@ namespace Shop.Services.Test.Unit.Categories
 
             Action expected = () => _sut.Delete(category.Id);
 
-            expected.Should().ThrowExactly<UnableToDeleteCategoryWithExistingProductException>();
+            expected.Should()
+                .ThrowExactly<UnableToDeleteCategoryWithExistingProductException>();
         }
 
         [Fact]

@@ -26,7 +26,8 @@ namespace Shop.Persistence.EF.Products
 
         public void AddtoStock(int code, int count)
         {
-            _dataContext.Products.FirstOrDefault(_ => _.Code == code).InStockCount += count;
+            _dataContext.Products
+                .FirstOrDefault(_ => _.Code == code).InStockCount += count;
         }
 
         public void Delete(Product product)
@@ -36,7 +37,8 @@ namespace Shop.Persistence.EF.Products
 
         public Product FindByCode(int code)
         {
-            return _dataContext.Products.Where(_ => _.Code == code).FirstOrDefault();
+            return _dataContext.Products
+                .Where(_ => _.Code == code).FirstOrDefault();
         }
 
         public Product FindById(int productId)
@@ -58,44 +60,46 @@ namespace Shop.Persistence.EF.Products
 
         public GetProductWithPurchaseBillsDto GetPurchaseBills(int code)
         {
-            return _dataContext.Products.Where(_ => _.Code == code).Select(_ => new GetProductWithPurchaseBillsDto
-            {
-                Code = _.Code,
-                Name = _.Name,
-                InStockCount = _.InStockCount,
-                Price = _.Price,
-                Id = _.Id,
-                PurchaseBills = _.PurchaseBills.Select(_ => new GetPurchaseBillDto
+            return _dataContext.Products.Where(_ => _.Code == code)
+                .Select(_ => new GetProductWithPurchaseBillsDto
                 {
-                    Count = _.Count,
-                    SellerName = _.SellerName,
-                    WholePrice = _.WholePrice,
-                    Date = _.Date,
+                    Code = _.Code,
+                    Name = _.Name,
+                    InStockCount = _.InStockCount,
+                    Price = _.Price,
                     Id = _.Id,
-                    ProductId = _.ProductId
-                }).ToList()
-            }).FirstOrDefault();
+                    PurchaseBills = _.PurchaseBills.Select(_ => new GetPurchaseBillDto
+                    {
+                        Count = _.Count,
+                        SellerName = _.SellerName,
+                        WholePrice = _.WholePrice,
+                        Date = _.Date,
+                        Id = _.Id,
+                        ProductId = _.ProductId
+                    }).ToList()
+                }).FirstOrDefault();
         }
 
         public GetProductWithSaleBillsDto GetSaleBills(int code)
         {
-            return _dataContext.Products.Where(_ => _.Code == code).Select(_ => new GetProductWithSaleBillsDto
-            {
-                Code = _.Code,
-                Name = _.Name,
-                InStockCount = _.InStockCount,
-                Price = _.Price,
-                Id = _.Id,
-                SaleBills = _.SaleBills.Select(_ => new GetSaleBillDto
+            return _dataContext.Products.Where(_ => _.Code == code)
+                .Select(_ => new GetProductWithSaleBillsDto
                 {
-                    Count = _.Count,
-                    CustomerName = _.CustomerName,
-                    WholePrice = _.WholePrice,
-                    Date = _.Date,
+                    Code = _.Code,
+                    Name = _.Name,
+                    InStockCount = _.InStockCount,
+                    Price = _.Price,
                     Id = _.Id,
-                    ProductId = _.ProductId
-                }).ToList()
-            }).FirstOrDefault();
+                    SaleBills = _.SaleBills.Select(_ => new GetSaleBillDto
+                    {
+                        Count = _.Count,
+                        CustomerName = _.CustomerName,
+                        WholePrice = _.WholePrice,
+                        Date = _.Date,
+                        Id = _.Id,
+                        ProductId = _.ProductId
+                    }).ToList()
+                }).FirstOrDefault();
         }
 
         public bool IsExistCode(int code)

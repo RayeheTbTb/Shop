@@ -15,7 +15,8 @@ namespace Shop.Services.Categories
     {
         private readonly CategoryRepository _repository;
         private readonly UnitOfWork _unitOfWork;
-        public CategoryAppService(CategoryRepository repository, UnitOfWork unitOfWork)
+        public CategoryAppService(CategoryRepository repository, 
+            UnitOfWork unitOfWork)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
@@ -34,7 +35,6 @@ namespace Shop.Services.Categories
             {
                 Title = dto.Title
             };
-
 
             _repository.Add(category);
             _unitOfWork.Commit();
@@ -68,7 +68,6 @@ namespace Shop.Services.Categories
         public IList<GetProductDto> GetProducts(int id)
         {
             return _repository.GetProducts(id);
-
         }
 
         public void Update(int id, UpdateCategoryDto dto)

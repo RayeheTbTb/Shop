@@ -26,7 +26,8 @@ namespace Shop.Persistence.EF.Categories
 
         public int CategoryProductCount(int id)
         {
-            return _dataContext.Categories.FirstOrDefault(_ => _.Id == id).Products.Count();
+            return _dataContext.Categories
+                .FirstOrDefault(_ => _.Id == id).Products.Count();
         }
 
         public void Delete(Category category)

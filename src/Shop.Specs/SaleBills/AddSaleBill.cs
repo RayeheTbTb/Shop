@@ -1,11 +1,12 @@
-﻿using Shop.Entities;
+﻿using FluentAssertions;
+using Shop.Entities;
 using Shop.Infrastructure.Application;
 using Shop.Persistence.EF;
 using Shop.Persistence.EF.Products;
-using Shop.Persistence.EF.PurchaseBills;
+using Shop.Persistence.EF.SaleBills;
 using Shop.Services.Products.Contracts;
-using Shop.Services.PurchaseBills;
-using Shop.Services.PurchaseBills.Contracts;
+using Shop.Services.SaleBills;
+using Shop.Services.SaleBills.Contracts;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
@@ -14,33 +15,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using FluentAssertions;
 using static Shop.Specs.BDDHelper;
 
-namespace Shop.Specs.PurchaseBills
+namespace Shop.Specs.SaleBills
 {
-    [Scenario("اضافه کردن سند خرید")]
+    [Scenario("اضافه کردن فاکتور فروش")]
     [Feature("",
         AsA = "فروشنده",
-        IWantTo = " سند خرید را مدیریت کنم",
-        InOrderTo = "سند خرید خود را تعریف کنم"
+        IWantTo = " فاکتور فروش را مدیریت کنم",
+        InOrderTo = "فاکتور فروش خود را تعریف کنم"
     )]
-    public class AddPurchaseBill : EFDataContextDatabaseFixture
+    public class AddSaleBill : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
-        private readonly PurchaseBillRepository _repository;
+        private readonly SaleBillRepository _repository;
         private readonly UnitOfWork _unitOfWork;
         private readonly ProductRepository _productRepository;
-        private readonly PurchaseBillService _sut;
+        private readonly SaleBillService _sut;
         private Product _product;
-        private AddPurchaseBillDto _dto;
-        public AddPurchaseBill(ConfigurationFixture configuration) : base(configuration)
+        private AddSaleBillDto _dto;
+        public AddSaleBill(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
-            _repository = new EFPurchaseBillRepository(_dataContext);
+            _repository = new EFSaleBillRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _productRepository = new EFProductRepository(_dataContext);
-            _sut = new PurchaseBillAppService(_repository, _unitOfWork, 
+            _sut = new SaleBillAppService(_repository, _unitOfWork, 
                 _productRepository);
         }
 
@@ -55,32 +55,32 @@ namespace Shop.Specs.PurchaseBills
             ProductFactory.AddProductToDatabase(_product, _dataContext);
         }
 
-        [And("هیچ سند ورود کالایی در فهرست سند ورودی کالا وجود ندارد")]
+        [And("هیچ فاکتور فروش کالایی در فهرست فاکتور فروش کالا وجود ندارد")]
         public void GivenAnd()
         {
 
         }
 
-        [When("سند کالایی برای کالایی به نام 'فروشنده' با کد '1' با تعداد '10' با مجموع قیمت '5000 تومان' در تاریخ '21 / 02 / 1400' وارد میکنیم")]
+        [When("فاکتور فروش کالایی برای کالایی به نام 'خریدار' با کد '1' با تعداد '5' با مجموع قیمت '5000 تومان' در تاریخ '21 / 02 / 1400' وارد میکنیم")]
         public void When()
         {
-            _dto = new AddPurchaseBillDto
+            _dto = new AddSaleBillDto
             {
-                Count = 10,
-                Date = DateTime.Parse("2022-04-27T05:22:05.264Z"),
+                Count = 5,
+                CustomerName = "Customer",
                 ProductCode = _product.Code,
-                SellerName = "seller",
-                WholePrice = 10000
+                WholePrice = 5000,
+                Date = DateTime.Parse("2022-04-27T05:22:05.264Z")
             };
 
             _sut.Add(_dto);
         }
 
-        [Then("سند ورود کالایی با کد '1' با تعداد '10' در تاریخ '21 / 02 / 1400' در فهرست سند ورودی کالا باید وجود داشته باشد")]
+        [Then("فاکتور فروش کالایی با کد '1' با تعداد '5' در تاریخ '21 / 02 / 1400' در فهرست فاکتور فروش کالا باید وجود داشته باشد")]
         public void Then()
         {
-            var expected = _dataContext.PurchaseBills.FirstOrDefault();
-            expected.SellerName.Should().Be(_dto.SellerName);
+            var expected = _dataContext.SaleBills.FirstOrDefault();
+            expected.CustomerName.Should().Be(_dto.CustomerName);
             expected.Count.Should().Be(_dto.Count);
             expected.ProductId.Should().Be(_product.Id);
             expected.WholePrice.Should().Be(_dto.WholePrice);
@@ -88,12 +88,12 @@ namespace Shop.Specs.PurchaseBills
 
         }
 
-        [And("کالایی با عنوان 'شیر کاله' و کد کالای '1' موجودی '20' عدد در فهرست کالا ها باید وجود داشته باشد")]
+        [And("کالایی با عنوان 'شیر کاله' و کد کالای '1' موجودی '5' عدد در فهرست کالا ها باید وجود داشته باشد")]
         public void ThenAnd()
         {
             var expectedProduct = _dataContext.Products
                 .Where(_ => _.Id == _product.Id).FirstOrDefault();
-            expectedProduct.InStockCount.Should().Be(20);
+            expectedProduct.InStockCount.Should().Be(5);
         }
 
         [Fact]

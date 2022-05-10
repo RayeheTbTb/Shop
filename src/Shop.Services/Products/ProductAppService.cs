@@ -19,7 +19,9 @@ namespace Shop.Services.Products
         private readonly PurchaseBillRepository _purchaseBillRepository;
         private readonly UnitOfWork _unitOfWork;
 
-        public ProductAppService(ProductRepository repository, UnitOfWork unitOfWork, PurchaseBillRepository purchaseBillRepository)
+        public ProductAppService(ProductRepository repository, 
+            UnitOfWork unitOfWork, 
+            PurchaseBillRepository purchaseBillRepository)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
@@ -34,8 +36,8 @@ namespace Shop.Services.Products
                 throw new DuplicateProductCodeException();
             }
 
-            var isNameExistInCategory = _repository.IsExistNameInCategory(dto.CategoryId, dto.Name);
-
+            var isNameExistInCategory = _repository
+                .IsExistNameInCategory(dto.CategoryId, dto.Name);
             if (isNameExistInCategory)
             {
                 throw new DuplicateProductNameInCategoryException();
@@ -48,6 +50,7 @@ namespace Shop.Services.Products
                 MinimumInStock = dto.MinimumInStock,
                 CategoryId = dto.CategoryId
             };
+
             _repository.Add(product);
             _unitOfWork.Commit();
         }
@@ -69,6 +72,7 @@ namespace Shop.Services.Products
                 Product = product,
                 ProductId = product.Id
             };
+
             product.Price = dto.WholePrice / dto.Count;
             _repository.AddtoStock(dto.Code, dto.Count);
             _purchaseBillRepository.Add(purchaseBill);
@@ -78,7 +82,8 @@ namespace Shop.Services.Products
         public void Delete(int code)
         {
             Product product = _repository.FindByCode(code);
-            bool billForProductExists = _purchaseBillRepository.BillExistsForProduct(code);
+            bool billForProductExists = _purchaseBillRepository
+                .BillExistsForProduct(code);
 
             if (billForProductExists)
             {
@@ -106,6 +111,7 @@ namespace Shop.Services.Products
             {
                 throw new ProductNotFoundException();
             }
+
             if (product.PurchaseBills.Count() == 0)
             {
                 throw new PurchaseBillNotFoundException();
@@ -120,11 +126,11 @@ namespace Shop.Services.Products
             {
                 throw new ProductNotFoundException();
             }
+
             if (product.SaleBills.Count() == 0)
             {
                 throw new NoSaleBillsExistException();
             }
-
             return _repository.GetSaleBills(code);
         }
 
@@ -136,7 +142,8 @@ namespace Shop.Services.Products
                 throw new ProductNotFoundException();
             }
 
-            var isNameDuplicate = _repository.IsExistNameInCategory(product.CategoryId, dto.Name);
+            var isNameDuplicate = _repository
+                .IsExistNameInCategory(product.CategoryId, dto.Name);
             if (isNameDuplicate)
             {
                 throw new DuplicateProductNameInCategoryException();

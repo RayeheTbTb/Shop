@@ -18,7 +18,8 @@ namespace Shop.Services.PurchaseBills
         private readonly ProductRepository _productRepository;
         private readonly UnitOfWork _unitOfWork;
 
-        public PurchaseBillAppService(PurchaseBillRepository repository, UnitOfWork unitOfWork, ProductRepository productRepository)
+        public PurchaseBillAppService(PurchaseBillRepository repository, 
+            UnitOfWork unitOfWork, ProductRepository productRepository)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
@@ -78,14 +79,16 @@ namespace Shop.Services.PurchaseBills
         public void Update(int id, UpdatePurchaseBillDto dto)
         {
             var product = _productRepository.FindByCode(dto.ProductCode);
+
             PurchaseBill purchaseBill = _repository.FindById(id);
             if(purchaseBill == null)
             {
                 throw new PurchaseBillNotFoundException();
             }
-            Product previousProduct = _productRepository.FindById(purchaseBill.ProductId);
-            //_productRepository.RemovePurchaseBill(purchaseBill.ProductId, id);
-            //previousProduct.PurchaseBills.Remove(_ => _.Id == purchaseBill.Id);
+
+            Product previousProduct = _productRepository
+                .FindById(purchaseBill.ProductId);
+
             _productRepository.RemoveFromStock(previousProduct, dto.Count);
             purchaseBill.Product = product;
             purchaseBill.ProductId = product.Id;

@@ -30,11 +30,13 @@ namespace Shop.Services.Test.Unit.PurchaseBills
 
         public PurchaseBillServiceTests()
         {
-            _dataContext = new EFInMemoryDatabase().CreateDataContext<EFDataContext>();
+            _dataContext = new EFInMemoryDatabase()
+                .CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _repository = new EFPurchaseBillRepository(_dataContext);
             _productRepository = new EFProductRepository(_dataContext);
-            _sut = new PurchaseBillAppService(_repository, _unitOfWork, _productRepository);
+            _sut = new PurchaseBillAppService(_repository, _unitOfWork, 
+                _productRepository);
         }
 
         [Fact]
@@ -43,8 +45,8 @@ namespace Shop.Services.Test.Unit.PurchaseBills
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk")
-                .WithCode(1).WithInStockCount(10).Build();
+                .WithName("Kale Milk").WithCode(1)
+                .WithInStockCount(10).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             AddPurchaseBillDto dto = GenerateAddPurchaseBillDto(product.Code);
 
@@ -56,7 +58,8 @@ namespace Shop.Services.Test.Unit.PurchaseBills
             expected.ProductId.Should().Be(product.Id);
             expected.WholePrice.Should().Be(dto.WholePrice);
             expected.Date.Date.Should().Be(dto.Date.Date);
-            var expectedProduct = _dataContext.Products.Where(_ => _.Id == product.Id).FirstOrDefault();
+            var expectedProduct = _dataContext.Products
+                .Where(_ => _.Id == product.Id).FirstOrDefault();
             expectedProduct.InStockCount.Should().Be(20);
         }
 
@@ -88,7 +91,8 @@ namespace Shop.Services.Test.Unit.PurchaseBills
 
             _sut.Update(billId, dto);
 
-            var expected = _dataContext.PurchaseBills.FirstOrDefault(_ => _.Id == billId);
+            var expected = _dataContext.PurchaseBills
+                .FirstOrDefault(_ => _.Id == billId);
             expected.ProductId.Should().Be(product2.Id);
             expected.SellerName.Should().Be(dto.SellerName);
             expected.Product.Name.Should().Be(product2.Name);
@@ -152,10 +156,13 @@ namespace Shop.Services.Test.Unit.PurchaseBills
             var purchasebill = product.PurchaseBills.First();
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.ProductId == product.Id);
-            expected.Should().Contain(_ => _.SellerName == purchasebill.SellerName);
-            expected.Should().Contain(_ => _.Date.Date == purchasebill.Date.Date);
             expected.Should().Contain(_ => _.Count == purchasebill.Count);
-            expected.Should().Contain(_ => _.WholePrice == purchasebill.WholePrice);
+            expected.Should()
+                .Contain(_ => _.SellerName == purchasebill.SellerName);
+            expected.Should()
+                .Contain(_ => _.Date.Date == purchasebill.Date.Date);
+            expected.Should()
+                .Contain(_ => _.WholePrice == purchasebill.WholePrice);
         }
 
         [Fact]
