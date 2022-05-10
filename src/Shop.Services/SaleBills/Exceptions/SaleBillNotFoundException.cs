@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Services.SaleBills.Exceptions
 {
-    public class NoSaleBillsExistException : Exception
+    public class SaleBillNotFoundException : Exception
     {
     }
 }

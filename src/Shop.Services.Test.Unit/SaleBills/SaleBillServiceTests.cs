@@ -123,6 +123,35 @@ namespace Shop.Services.Test.Unit.SaleBills
             expected.Should().ThrowExactly<ProductReachedMinimumInStockCountException>();
         }
 
+        [Fact]
+        public void Delete_deletes_saleBill_properly()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithName("dummy").WithCode(1)
+                .WithInStockCount(5)
+                .WithSaleBill("Customer", 5,
+                DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+            var billId = product.SaleBills.First().Id;
+
+            _sut.Delete(billId);
+
+            _dataContext.SaleBills.Should().NotContain(_ => _.Id == billId);
+            _dataContext.Products.FirstOrDefault(_ => _.Id == product.Id)
+               .InStockCount.Should().Be(10);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        public void Delete_throws_SaleBillNotFoundException_when_no_saleBill_with_given_id_exists(int fakeId)
+        {
+            Action expected = () => _sut.Delete(fakeId);
+
+            expected.Should().ThrowExactly<SaleBillNotFoundException>();
+        }
+
         private static AddSaleBillDto GenerateAddSaleBillDto(int productCode)
         {
             return new AddSaleBillDto

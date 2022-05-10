@@ -62,5 +62,17 @@ namespace Shop.Services.SaleBills
 
             _unitOfWork.Commit();
         }
+
+        public void Delete(int id)
+        {
+            SaleBill saleBill = _repository.FindById(id);
+            if(saleBill == null)
+            {
+                throw new SaleBillNotFoundException();
+            }
+            _repository.Delete(saleBill);
+            _productRepository.AddtoStock(saleBill.Product.Code, saleBill.Count);
+            _unitOfWork.Commit();
+        }
     }
 }

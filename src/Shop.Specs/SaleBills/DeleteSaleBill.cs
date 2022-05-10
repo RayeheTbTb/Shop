@@ -7,7 +7,6 @@ using Shop.Persistence.EF.SaleBills;
 using Shop.Services.Products.Contracts;
 using Shop.Services.SaleBills;
 using Shop.Services.SaleBills.Contracts;
-using Shop.Services.SaleBills.Exceptions;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
@@ -20,13 +19,13 @@ using static Shop.Specs.BDDHelper;
 
 namespace Shop.Specs.SaleBills
 {
-    [Scenario("اضافه کردن فاکتور فروش")]
+    [Scenario("حذف فاکتور فروش")]
     [Feature("",
         AsA = "فروشنده",
         IWantTo = " فاکتور فروش را مدیریت کنم",
         InOrderTo = "فاکتور فروش خود را تعریف کنم"
     )]
-    public class AddSaleBillWithProductCountBiggerThanAvailableInStock : EFDataContextDatabaseFixture
+    public class DeleteSaleBill : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
         private readonly SaleBillRepository _repository;
@@ -34,8 +33,8 @@ namespace Shop.Specs.SaleBills
         private readonly ProductRepository _productRepository;
         private readonly SaleBillService _sut;
         private Product _product;
-        Action expected;
-        public AddSaleBillWithProductCountBiggerThanAvailableInStock(ConfigurationFixture configuration) : base(configuration)
+        private int _billId;
+        public DeleteSaleBill(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
             _repository = new EFSaleBillRepository(_dataContext);
@@ -45,56 +44,43 @@ namespace Shop.Specs.SaleBills
                 _productRepository);
         }
 
-        [Given("کالایی با عنوان 'شیر کاله' و کد کالای '1' موجودی '10' عدد در فهرست کالا ها وجود دارد")]
+        [Given("فاکتور فروشی به تاریخ '01 / 01 / 1400' به نام 'خریدار' برای کالای با عنوان 'شیر کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در فهرست فاکتور فروش کالا وجود دارد")]
         public void Given()
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             _product = new ProductBuilder(category)
-                .WithName("Kale Milk")
-                .WithCode(1).WithInStockCount(10).Build();
+                .WithName("Kale Milk").WithCode(1)
+                .WithInStockCount(5)
+                .WithSaleBill("Customer", 5,
+                DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
+            _billId = _product.SaleBills.First().Id;
         }
 
-        [And("هیچ فاکتور فروش کالایی در فهرست فاکتور فروش کالا وجود ندارد")]
-        public void GivenAnd()
-        {
-
-        }
-
-        [When("فاکتور فروش کالایی برای کالایی به نام 'خریدار' با کد '1' با تعداد '11' با مجموع قیمت '50000 تومان' در تاریخ '21 / 02 / 1400' وارد میکنیم")]
+        [When("فاکتور فروش را حذف میکنم")]
         public void When()
         {
-            AddSaleBillDto dto = new AddSaleBillDto
-            {
-                Count = 11,
-                CustomerName = "Customer",
-                ProductCode = _product.Code,
-                WholePrice = 50000,
-                Date = DateTime.Parse("2022-04-27T05:22:05.264Z")
-            };
-
-            expected = () => _sut.Add(dto);
+            _sut.Delete(_billId);
         }
 
-        [Then("هیچ فاکتور فروش کالایی در فهرست فاکتور فروش کالا نباید وجود داشته باشد و موجودی کالا نباید تغییر کند")] //
+        [Then("فاکتور فروشی به تاریخ '01 / 01 / 1400' به نام 'خریدار' برای کالای با عنوان 'شیر کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در فهرست فاکتور فروش کالا نباید وجود داشته باشد")]
         public void Then()
         {
-            _dataContext.SaleBills.Should().HaveCount(0);
-            _product.InStockCount.Should().Be(10);
+            _dataContext.SaleBills.Should().NotContain(_ => _.Id == _billId);
         }
 
-        [And("خطایی با عنوان 'تعداد کالای درخواستی بیشتر از موجودی است' باید نمایش داده شود")]
+        [And("کالایی با عنوان 'شیر کاله' و کد کالای '1' موجودی '10' عدد در فهرست کالا ها وجود دارد")] //
         public void ThenAnd()
         {
-            expected.Should().ThrowExactly<NotEnoughProductInStockException>();
+            _dataContext.Products.FirstOrDefault(_ => _.Id == _product.Id)
+               .InStockCount.Should().Be(10);
         }
 
         [Fact]
         public void Run()
         {
             Given();
-            GivenAnd();
             When();
             Then();
             ThenAnd();

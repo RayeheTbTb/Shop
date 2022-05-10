@@ -322,7 +322,7 @@ namespace Shop.Services.Test.Unit.Products
         }
 
         [Fact]
-        public void GetSaleBills_throws_NoSaleBillsExistException_when_no_sale_bills_exist_for_the_product_with_given_code()
+        public void GetSaleBills_throws_SaleBillNotFoundException_when_no_sale_bills_exist_for_the_product_with_given_code()
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
@@ -332,7 +332,7 @@ namespace Shop.Services.Test.Unit.Products
 
             Action expected = () => _sut.GetSaleBills(product.Code);
 
-            expected.Should().ThrowExactly<NoSaleBillsExistException>();
+            expected.Should().ThrowExactly<SaleBillNotFoundException>();
         }
 
         private static UpdateProductDto GenerateUpdateProductDto()

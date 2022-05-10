@@ -129,7 +129,7 @@ namespace Shop.Services.Products
 
             if (product.SaleBills.Count() == 0)
             {
-                throw new NoSaleBillsExistException();
+                throw new SaleBillNotFoundException();
             }
             return _repository.GetSaleBills(code);
         }

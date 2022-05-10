@@ -11,5 +11,7 @@ namespace Shop.Services.SaleBills.Contracts
     public interface SaleBillRepository : Repository
     {
         void Add(SaleBill saleBill);
+        SaleBill FindById(int id);
+        void Delete(SaleBill saleBill);
     }
 }

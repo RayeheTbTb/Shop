@@ -21,5 +21,15 @@ namespace Shop.Persistence.EF.SaleBills
         {
             _dataContext.SaleBills.Add(saleBill);
         }
+
+        public void Delete(SaleBill saleBill)
+        {
+            _dataContext.SaleBills.Remove(saleBill);
+        }
+
+        public SaleBill FindById(int id)
+        {
+            return _dataContext.SaleBills.Find(id);
+        }
     }
 }
