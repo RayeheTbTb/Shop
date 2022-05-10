@@ -74,5 +74,42 @@ namespace Shop.Services.SaleBills
             _productRepository.AddtoStock(saleBill.Product.Code, saleBill.Count);
             _unitOfWork.Commit();
         }
+
+        public void Update(int id, UpdateSaleBillDto dto)
+        {
+            var product = _productRepository.FindByCode(dto.ProductCode);
+            var saleBill = _repository.FindById(id);
+            if(saleBill == null)
+            {
+                throw new SaleBillNotFoundException();
+            }
+
+            Product previousProduct = _productRepository
+                .FindById(saleBill.ProductId);
+            if(product.InStockCount < dto.Count)
+            {
+                throw new NotEnoughProductInStockException();
+            }
+
+            _productRepository.AddtoStock(previousProduct.Code, dto.Count);
+            saleBill.Product = product;
+            saleBill.ProductId = product.Id;
+            saleBill.Count = dto.Count;
+            saleBill.CustomerName = dto.CustomerName;
+            saleBill.WholePrice = dto.WholePrice;
+            _productRepository.RemoveFromStock(product, saleBill.Count);
+
+            if (product.InStockCount == 0)
+            {
+                throw new ProductOutOfStockException();
+            }
+
+            if (product.InStockCount <= product.MinimumInStock)
+            {
+                throw new ProductReachedMinimumInStockCountException();
+            }
+
+            _unitOfWork.Commit();
+        }
     }
 }

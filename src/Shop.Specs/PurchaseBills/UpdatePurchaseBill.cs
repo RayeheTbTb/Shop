@@ -89,6 +89,7 @@ namespace Shop.Specs.PurchaseBills
             expected.WholePrice.Should().Be(_dto.WholePrice);
             _product.PurchaseBills.Should().NotContain(_ => _.Id == _billId);
             _product.InStockCount.Should().Be(5);
+            _product2.InStockCount.Should().Be(15);
         }
 
         [Fact]
