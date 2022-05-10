@@ -31,5 +31,18 @@ namespace Shop.Persistence.EF.SaleBills
         {
             return _dataContext.SaleBills.Find(id);
         }
+
+        public IList<GetSaleBillDto> GetAll()
+        {
+            return _dataContext.SaleBills.Select(_ => new GetSaleBillDto
+            {
+                Count = _.Count,
+                CustomerName = _.CustomerName,
+                Date = _.Date,
+                Id = _.Id,
+                ProductId = _.ProductId,
+                WholePrice = _.WholePrice
+            }).ToList();
+        }
     }
 }

@@ -44,9 +44,7 @@ namespace Shop.Services.Test.Unit.SaleBills
         {
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
-            var product = new ProductBuilder(category)
-                .WithName("Kale Milk")
-                .WithCode(1).WithInStockCount(10).Build();
+            var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             AddSaleBillDto dto = GenerateAddSaleBillDto(product.Code);
 
@@ -80,8 +78,7 @@ namespace Shop.Services.Test.Unit.SaleBills
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk")
-                .WithCode(1).WithInStockCount(4).Build();
+                .WithInStockCount(4).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             AddSaleBillDto dto = GenerateAddSaleBillDto(product.Code);
 
@@ -96,8 +93,7 @@ namespace Shop.Services.Test.Unit.SaleBills
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk")
-                .WithCode(1).WithInStockCount(5).Build();
+                .WithInStockCount(5).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             AddSaleBillDto dto = GenerateAddSaleBillDto(product.Code);
 
@@ -112,8 +108,7 @@ namespace Shop.Services.Test.Unit.SaleBills
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category)
-                .WithName("Kale Milk")
-                .WithCode(1).WithInStockCount(10)
+                .WithInStockCount(10)
                 .WithMinimumInStock(6).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
             AddSaleBillDto dto = GenerateAddSaleBillDto(product.Code);
@@ -129,7 +124,6 @@ namespace Shop.Services.Test.Unit.SaleBills
             var category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category)
-                .WithName("dummy").WithCode(1)
                 .WithInStockCount(5)
                 .WithSaleBill("Customer", 5,
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
@@ -252,6 +246,28 @@ namespace Shop.Services.Test.Unit.SaleBills
             Action expected = () => _sut.Update(billId, dto);
 
             expected.Should().ThrowExactly<ProductReachedMinimumInStockCountException>();
+        }
+
+        [Fact]
+        public void GetAll_returns_all_saleBills()
+        {
+            var category = CategoryFactory.CreateCategory();
+            CategoryFactory.AddCategoryToDatabase(category, _dataContext);
+            var product = new ProductBuilder(category)
+                .WithSaleBill("Customer", 5,
+                DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
+            ProductFactory.AddProductToDatabase(product, _dataContext);
+
+
+            var expected = _sut.GetAll();
+
+            var purchasebill = product.SaleBills.First();
+            expected.Should().HaveCount(1);
+            expected.Should().Contain(_ => _.ProductId == product.Id);
+            expected.Should().Contain(_ => _.CustomerName == purchasebill.CustomerName);
+            expected.Should().Contain(_ => _.Date.Date == purchasebill.Date.Date);
+            expected.Should().Contain(_ => _.Count == purchasebill.Count);
+            expected.Should().Contain(_ => _.WholePrice == purchasebill.WholePrice);
         }
 
         private static UpdateSaleBillDto GenerateUpdateSaleBillDto(Product product)

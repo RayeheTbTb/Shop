@@ -75,6 +75,11 @@ namespace Shop.Services.SaleBills
             _unitOfWork.Commit();
         }
 
+        public IList<GetSaleBillDto> GetAll()
+        {
+            return _repository.GetAll();
+        }
+
         public void Update(int id, UpdateSaleBillDto dto)
         {
             var product = _productRepository.FindByCode(dto.ProductCode);
