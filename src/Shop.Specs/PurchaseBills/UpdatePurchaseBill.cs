@@ -1,9 +1,6 @@
 ﻿using Shop.Specs.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using static Shop.Specs.BDDHelper;
@@ -16,7 +13,6 @@ using Shop.Persistence.EF.Products;
 using Shop.Services.PurchaseBills;
 using Shop.Test.Tools;
 using Shop.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace Shop.Specs.PurchaseBills
 {
@@ -43,7 +39,8 @@ namespace Shop.Specs.PurchaseBills
             _repository = new EFPurchaseBillRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _productRepository = new EFProductRepository(_dataContext);
-            _sut = new PurchaseBillAppService(_repository, _unitOfWork, _productRepository);
+            _sut = new PurchaseBillAppService(_repository, _unitOfWork, 
+                _productRepository);
         }
 
         [Given("سند خریدی به تاریخ '01 / 01 / 1400' به نام 'فروشنده' برای کالای با عنوان 'شیر کاله' به تعداد '10' با مجموع قیمت '10000 تومان' فهرست سند ورودی کالا وجود دارد")]
@@ -80,7 +77,8 @@ namespace Shop.Specs.PurchaseBills
         [Then("سند خریدی به نام 'فروشنده2' برای کالای با عنوان 'ماست کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در فهرست سند ورودی کالا باید وجود داشته باشد")]
         public void Then()
         {
-            var expected = _dataContext.PurchaseBills.FirstOrDefault(_ => _.Id == _billId);
+            var expected = _dataContext.PurchaseBills
+                .FirstOrDefault(_ => _.Id == _billId);
 
             expected.ProductId.Should().Be(_product2.Id);
             expected.SellerName.Should().Be(_dto.SellerName);

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Shop.Entities;
 using Shop.Infrastructure.Application;
 using Shop.Infrastructure.Test;
 using Shop.Persistence.EF;
@@ -10,10 +9,7 @@ using Shop.Services.Categories.Exceptions;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 

@@ -3,11 +3,7 @@ using Shop.Infrastructure.Application;
 using Shop.Services.Categories.Contracts;
 using Shop.Services.Categories.Exceptions;
 using Shop.Services.Products.Contracts;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Services.Categories
 {

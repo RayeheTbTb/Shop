@@ -7,10 +7,7 @@ using Shop.Services.Products.Contracts;
 using Shop.Services.SaleBills;
 using Shop.Services.SaleBills.Contracts;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using Shop.Test.Tools;
@@ -166,8 +163,8 @@ namespace Shop.Services.Test.Unit.SaleBills
 
             _sut.Update(billId, dto);
 
-            var expected = _dataContext.SaleBills.FirstOrDefault(_ => _.Id == billId);
-
+            var expected = _dataContext.SaleBills
+                .FirstOrDefault(_ => _.Id == billId);
             expected.ProductId.Should().Be(product2.Id);
             expected.CustomerName.Should().Be(dto.CustomerName);
             expected.Product.Name.Should().Be(product2.Name);
@@ -258,16 +255,18 @@ namespace Shop.Services.Test.Unit.SaleBills
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
 
-
             var expected = _sut.GetAll();
 
             var purchasebill = product.SaleBills.First();
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.ProductId == product.Id);
-            expected.Should().Contain(_ => _.CustomerName == purchasebill.CustomerName);
-            expected.Should().Contain(_ => _.Date.Date == purchasebill.Date.Date);
             expected.Should().Contain(_ => _.Count == purchasebill.Count);
-            expected.Should().Contain(_ => _.WholePrice == purchasebill.WholePrice);
+            expected.Should()
+                .Contain(_ => _.CustomerName == purchasebill.CustomerName);
+            expected.Should()
+                .Contain(_ => _.Date.Date == purchasebill.Date.Date);
+            expected.Should()
+                .Contain(_ => _.WholePrice == purchasebill.WholePrice);
         }
 
         [Fact]

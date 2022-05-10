@@ -9,11 +9,7 @@ using Shop.Services.Products.Contracts;
 using Shop.Services.PurchaseBills.Contracts;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -40,8 +36,10 @@ namespace Shop.Specs.Products
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
+            _purchaseBillRepository = 
+                new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork, 
+                _purchaseBillRepository);
         }
 
         [Given("کالایی با عنوان 'شیر کاله'، قیمت '10000تومان'، کد محصول '1'، موجودی '10' و یک سند خرید وجود دارد")]

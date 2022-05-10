@@ -10,10 +10,7 @@ using Shop.Services.SaleBills.Contracts;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -85,7 +82,6 @@ namespace Shop.Specs.SaleBills
             expected.ProductId.Should().Be(_product.Id);
             expected.WholePrice.Should().Be(_dto.WholePrice);
             expected.Date.Date.Should().Be(_dto.Date.Date);
-
         }
 
         [And("کالایی با عنوان 'شیر کاله' و کد کالای '1' موجودی '5' عدد در فهرست کالا ها باید وجود داشته باشد")]

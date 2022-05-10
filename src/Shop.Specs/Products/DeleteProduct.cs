@@ -1,9 +1,4 @@
 ﻿using Shop.Specs.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using static Shop.Specs.BDDHelper;
@@ -39,8 +34,10 @@ namespace Shop.Specs.Products
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
+            _purchaseBillRepository = 
+                new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork, 
+                _purchaseBillRepository);
         }
 
         [Given("کالایی با عنوان 'شیر کاله ' و کد کالای '1' تعریف شده است")]
@@ -62,7 +59,8 @@ namespace Shop.Specs.Products
         [Then("کالایی با عنوان 'شیر کاله' و کد کالای '1' نباید در فهرست کالاها وجود داشته باشد")]
         public void Then()
         {
-            _dataContext.Products.Should().NotContain(_ => _.Code == _product.Code);
+            _dataContext.Products.Should()
+                .NotContain(_ => _.Code == _product.Code);
         }
 
         [Fact]

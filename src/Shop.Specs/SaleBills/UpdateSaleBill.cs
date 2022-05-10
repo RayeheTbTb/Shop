@@ -10,10 +10,7 @@ using Shop.Services.SaleBills.Contracts;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -82,7 +79,8 @@ namespace Shop.Specs.SaleBills
         [Then("فاکتور فروشی به نام 'خریدار2' برای کالای با عنوان 'ماست کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در فهرست سند ورودی کالا باید وجود داشته باشد")]
         public void Then()
         {
-            var expected = _dataContext.SaleBills.FirstOrDefault(_ => _.Id == _billId);
+            var expected = _dataContext.SaleBills
+                .FirstOrDefault(_ => _.Id == _billId);
 
             expected.ProductId.Should().Be(_product2.Id);
             expected.CustomerName.Should().Be(_dto.CustomerName);

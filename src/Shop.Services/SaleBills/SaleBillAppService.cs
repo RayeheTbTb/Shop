@@ -4,11 +4,7 @@ using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
 using Shop.Services.SaleBills.Contracts;
 using Shop.Services.SaleBills.Exceptions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Services.SaleBills
 {
@@ -70,8 +66,9 @@ namespace Shop.Services.SaleBills
             {
                 throw new SaleBillNotFoundException();
             }
-            _repository.Delete(saleBill);
+
             _productRepository.AddtoStock(saleBill.Product.Code, saleBill.Count);
+            _repository.Delete(saleBill);
             _unitOfWork.Commit();
         }
 
@@ -107,6 +104,7 @@ namespace Shop.Services.SaleBills
             }
 
             _productRepository.AddtoStock(previousProduct.Code, dto.Count);
+
             saleBill.Product = product;
             saleBill.ProductId = product.Id;
             saleBill.Count = dto.Count;

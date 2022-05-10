@@ -1,9 +1,5 @@
 ﻿using Shop.Specs.Infrastructure;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using static Shop.Specs.BDDHelper;
@@ -42,8 +38,10 @@ namespace Shop.Specs.Products
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
+            _purchaseBillRepository = 
+                new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork, 
+                _purchaseBillRepository);
         }
 
         [Given("کالایی با عنوان 'شیر کاله' و کد کالای '1' تعریف شده است")]
@@ -90,7 +88,8 @@ namespace Shop.Specs.Products
         [And("خطایی با عنوان 'کالا با سابقه ی موجودی قابل حذف نیست' باید رخ دهد")]
         public void ThenAnd()
         {
-            expected.Should().ThrowExactly<UnableToDeleteProductWithExistingPurchaseBillException>();
+            expected.Should()
+                .ThrowExactly<UnableToDeleteProductWithExistingPurchaseBillException>();
         }
 
         [Fact]

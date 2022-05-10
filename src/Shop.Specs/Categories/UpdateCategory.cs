@@ -8,11 +8,7 @@ using Shop.Services.Categories;
 using Shop.Services.Categories.Contracts;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -32,8 +28,6 @@ namespace Shop.Specs.Categories
         private readonly CategoryService _sut;
         private Category _category;
         private UpdateCategoryDto _dto;
-        Action expected;
-
         public UpdateCategory(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();

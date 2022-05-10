@@ -1,9 +1,5 @@
 ﻿using Shop.Specs.Infrastructure;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using static Shop.Specs.BDDHelper;
@@ -71,7 +67,8 @@ namespace Shop.Specs.Categories
             expected.Should().Contain(_ => _.Id == _product.Id);
             expected.Should().Contain(_ => _.Code == _product.Code);
             expected.Should().Contain(_ => _.Price == _product.Price);
-            expected.Should().Contain(_ => _.InStockCount == _product.InStockCount);
+            expected.Should()
+                .Contain(_ => _.InStockCount == _product.InStockCount);
         }
 
         [Fact]

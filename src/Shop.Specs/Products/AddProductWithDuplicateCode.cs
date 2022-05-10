@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using Shop.Specs.Infrastructure;
@@ -41,8 +38,10 @@ namespace Shop.Specs.Products
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
+            _purchaseBillRepository = 
+                new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork, 
+                _purchaseBillRepository);
         }
 
         [Given("کالایی با کد کالای '1' در فهرست کالاها وجود دارد")]
@@ -65,7 +64,6 @@ namespace Shop.Specs.Products
                 CategoryId = _category.Id
             };
             expected = () => _sut.Add(dto);
-
         }
 
         [Then("تنها یک کالا با کد کالای '1' در فهرست کالا باید وجود داشته باشد")]

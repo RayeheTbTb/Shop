@@ -10,10 +10,7 @@ using Shop.Services.PurchaseBills.Contracts;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -40,9 +37,11 @@ namespace Shop.Specs.Products
         {
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
-            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
+            _purchaseBillRepository = 
+                new EFPurchaseBillRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
+            _sut = new ProductAppService(_repository, _unitOfWork, 
+                _purchaseBillRepository);
         }
 
         [Given("کالایی با عنوان 'شیر کاله' و کد کالای '1' موجودی '10' عدد در فهرست کالا ها وجود دارد")]
@@ -50,7 +49,8 @@ namespace Shop.Specs.Products
         {
             _category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(_category, _dataContext);
-            _product = new ProductBuilder(_category).WithName("Kale Milk").Build();
+            _product = new ProductBuilder(_category)
+                .WithName("Kale Milk").Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
         }
 

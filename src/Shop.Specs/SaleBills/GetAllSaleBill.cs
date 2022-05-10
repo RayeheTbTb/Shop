@@ -12,8 +12,6 @@ using Shop.Test.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -55,7 +53,6 @@ namespace Shop.Specs.SaleBills
                 .WithSaleBill("Customer", 5,
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
-            
         }
 
         [When("درخواست مشاهده فهرست فاکتورهای فروش کالا ها را میدهم")]
@@ -70,10 +67,12 @@ namespace Shop.Specs.SaleBills
             var saleBill = _product.SaleBills.First();
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.ProductId == _product.Id);
-            expected.Should().Contain(_ => _.CustomerName == saleBill.CustomerName);
-            expected.Should().Contain(_ => _.Date.Date == saleBill.Date.Date);
             expected.Should().Contain(_ => _.Count == saleBill.Count);
-            expected.Should().Contain(_ => _.WholePrice == saleBill.WholePrice);
+            expected.Should().Contain(_ => _.Date.Date == saleBill.Date.Date);
+            expected.Should()
+                .Contain(_ => _.CustomerName == saleBill.CustomerName);
+            expected.Should()
+                .Contain(_ => _.WholePrice == saleBill.WholePrice);
         }
 
         [Fact]

@@ -1,43 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.Services.Categories.Contracts;
-using Shop.Services.Products.Contracts;
+using Shop.Services.PurchaseBills.Contracts;
 using System.Collections.Generic;
 
 namespace Shop.RestAPI.Controllers
 {
     [ApiController]
-    [Route("api/categories")]
-    public class CategoriesController : Controller
+    [Route("api/purchasebills")]
+    public class PurchaseBillsController : Controller
     {
-        private readonly CategoryService _service;
+        private readonly PurchaseBillService _service;
 
-        public CategoriesController(CategoryService service)
+        public PurchaseBillsController(PurchaseBillService service)
         {
             _service = service;
         }
 
         [HttpPost]
-        public void Add(AddCategoryDto dto)
+        public void Add(AddPurchaseBillDto dto)
         {
             _service.Add(dto);
         }
 
         [HttpPut("{id}")]
-        public void Update(int id, UpdateCategoryDto dto)
+        public void Update(int id, UpdatePurchaseBillDto dto)
         {
             _service.Update(id, dto);
         }
 
         [HttpGet]
-        public IList<GetCategoryDto> GetAll()
+        public IList<GetPurchaseBillDto> GetAll()
         {
             return _service.GetAll();
         }
 
         [HttpGet("{id}")]
-        public IList<GetProductDto> GetProducts(int id)
+        public GetPurchaseBillDto Get(int id)
         {
-            return _service.GetProducts(id);
+            return _service.Get(id);
         }
 
         [HttpDelete("{id}")]
@@ -45,5 +44,6 @@ namespace Shop.RestAPI.Controllers
         {
             _service.Delete(id);
         }
+
     }
 }

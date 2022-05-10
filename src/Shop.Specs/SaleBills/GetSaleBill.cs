@@ -10,10 +10,7 @@ using Shop.Services.SaleBills.Contracts;
 using Shop.Specs.Infrastructure;
 using Shop.Test.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -56,7 +53,6 @@ namespace Shop.Specs.SaleBills
                 DateTime.Parse("2022-04-27T05:22:05.264Z"), 5000).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
             _billId = _product.SaleBills.First().Id;
-
         }
 
         [When("درخواست مشاهده فاکتور فروش کالا را میدهم")]

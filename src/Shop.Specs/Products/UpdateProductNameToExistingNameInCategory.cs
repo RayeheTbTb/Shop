@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
 using static Shop.Specs.BDDHelper;
@@ -43,8 +40,10 @@ namespace Shop.Specs.Products
             _dataContext = CreateDataContext();
             _repository = new EFProductRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
-            _purchaseBillRepository = new EFPurchaseBillRepository(_dataContext);
-            _sut = new ProductAppService(_repository, _unitOfWork, _purchaseBillRepository);
+            _purchaseBillRepository = 
+                new EFPurchaseBillRepository(_dataContext);
+            _sut = new ProductAppService(_repository, _unitOfWork,
+                _purchaseBillRepository);
         }
 
         [Given("کالایی با عنوان 'شیر کاله' در دسته بندی با عنوان 'لبنیات' وجود دارد")]
@@ -52,14 +51,16 @@ namespace Shop.Specs.Products
         {
             _category = CategoryFactory.CreateCategory();
             CategoryFactory.AddCategoryToDatabase(_category, _dataContext);
-            _product = new ProductBuilder(_category).WithName("Kale Milk").WithCode(1).Build();
+            _product = new ProductBuilder(_category)
+                .WithName("Kale Milk").WithCode(1).Build();
             ProductFactory.AddProductToDatabase(_product, _dataContext);
         }
 
         [And("کالایی با عنوان 'ماست کاله' در دسته بندی با عنوان 'لبنیات' وجود دارد")]
         public void GivenAnd()
         {
-            _product2 = new ProductBuilder(_category).WithName("Kale Yogurt").WithCode(2).Build();
+            _product2 = new ProductBuilder(_category)
+                .WithName("Kale Yogurt").WithCode(2).Build();
             ProductFactory.AddProductToDatabase(_product2, _dataContext);
         }
 

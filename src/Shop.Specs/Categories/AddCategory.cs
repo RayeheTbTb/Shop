@@ -1,17 +1,11 @@
 ﻿using FluentAssertions;
-using Shop.Entities;
 using Shop.Infrastructure.Application;
-using Shop.Infrastructure.Test;
 using Shop.Persistence.EF;
 using Shop.Persistence.EF.Categories;
 using Shop.Services.Categories;
 using Shop.Services.Categories.Contracts;
 using Shop.Specs.Infrastructure;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 

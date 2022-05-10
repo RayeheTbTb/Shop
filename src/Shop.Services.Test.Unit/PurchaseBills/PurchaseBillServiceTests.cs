@@ -12,10 +12,7 @@ using Shop.Services.PurchaseBills.Contracts;
 using Shop.Services.PurchaseBills.Exceptions;
 using Shop.Test.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Shop.Services.Test.Unit.PurchaseBills
@@ -106,13 +103,11 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         [InlineData(2)]
         public void Update_throws_PurchaseBillNotFoundException_when_purchaseBill_with_given_id_does_not_exist(int fakeBillId)
         {
-
             UpdatePurchaseBillDto dto = GenerateUpdatePurchaseBillDto();
 
             Action expected = () => _sut.Update(fakeBillId, dto);
 
             expected.Should().ThrowExactly<PurchaseBillNotFoundException>();
-
         }
 
         [Fact]
@@ -138,6 +133,7 @@ namespace Shop.Services.Test.Unit.PurchaseBills
         public void Delete_throws_PurchaseBillNotFoundException_when_purchaseBill_with_given_id_does_not_exist(int fakeId)
         {
             Action expected = () => _sut.Delete(fakeId);
+
             expected.Should().ThrowExactly<PurchaseBillNotFoundException>();
         }
 

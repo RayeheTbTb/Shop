@@ -13,10 +13,7 @@ using Shop.Services.PurchaseBills.Exceptions;
 using Shop.Services.SaleBills.Exceptions;
 using Shop.Test.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Shop.Services.Test.Unit.Products
@@ -63,8 +60,8 @@ namespace Shop.Services.Test.Unit.Products
             CategoryFactory.AddCategoryToDatabase(category, _dataContext);
             var product = new ProductBuilder(category).Build();
             ProductFactory.AddProductToDatabase(product, _dataContext);
-            var dto =
-                GenerateDefineProductDtoWithSpecificCode(category, product.Code);
+            var dto =GenerateDefineProductDtoWithSpecificCode(category, 
+                product.Code);
 
             Action expected = () => _sut.Add(dto);
 

@@ -4,11 +4,7 @@ using Shop.Services.Products.Contracts;
 using Shop.Services.Products.Exceptions;
 using Shop.Services.PurchaseBills.Contracts;
 using Shop.Services.PurchaseBills.Exceptions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shop.Services.PurchaseBills
 {
@@ -43,6 +39,7 @@ namespace Shop.Services.PurchaseBills
                 Product = product,
                 ProductId = product.Id
             };
+
             _repository.Add(purchaseBill);
             product.InStockCount += dto.Count;
             _unitOfWork.Commit();

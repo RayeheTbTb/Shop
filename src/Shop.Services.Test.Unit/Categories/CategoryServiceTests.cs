@@ -8,10 +8,7 @@ using Shop.Services.Categories;
 using Shop.Services.Categories.Contracts;
 using Shop.Services.Categories.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Shop.Services.Test.Unit.Categories
@@ -39,7 +36,8 @@ namespace Shop.Services.Test.Unit.Categories
 
             _sut.Add(dto);
 
-            _dataContext.Categories.Should().Contain(_ => _.Title == dto.Title);
+            _dataContext.Categories.Should()
+                .Contain(_ => _.Title == dto.Title);
         }
 
         [Fact]
@@ -143,7 +141,8 @@ namespace Shop.Services.Test.Unit.Categories
             expected.Should().Contain(_ => _.Id == product.Id);
             expected.Should().Contain(_ => _.Code == product.Code);
             expected.Should().Contain(_ => _.Price == product.Price);
-            expected.Should().Contain(_ => _.InStockCount == product.InStockCount);
+            expected.Should()
+                .Contain(_ => _.InStockCount == product.InStockCount);
         }
 
         private static AddCategoryDto GenerateAddCategoryDto(string title)

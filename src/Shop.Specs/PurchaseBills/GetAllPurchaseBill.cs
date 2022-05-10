@@ -12,8 +12,6 @@ using Shop.Test.Tools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using static Shop.Specs.BDDHelper;
 
@@ -40,7 +38,8 @@ namespace Shop.Specs.PurchaseBills
             _repository = new EFPurchaseBillRepository(_dataContext);
             _unitOfWork = new EFUnitOfWork(_dataContext);
             _productRepository = new EFProductRepository(_dataContext);
-            _sut = new PurchaseBillAppService(_repository, _unitOfWork, _productRepository);
+            _sut = new PurchaseBillAppService(_repository, _unitOfWork, 
+                _productRepository);
         }
 
         [Given("سند خریدی به تاریخ '01 / 01 / 1400' به نام 'فروشنده' برای کالای با عنوان 'شیر کاله' به تعداد '5' با مجموع قیمت '5000 تومان' در فهرست سند ورودی کالا وجود دارد")]
@@ -67,10 +66,13 @@ namespace Shop.Specs.PurchaseBills
             var purchasebill = _product.PurchaseBills.First();
             expected.Should().HaveCount(1);
             expected.Should().Contain(_ => _.ProductId == _product.Id);
-            expected.Should().Contain(_ => _.SellerName == purchasebill.SellerName);
-            expected.Should().Contain(_ => _.Date.Date == purchasebill.Date.Date);
             expected.Should().Contain(_ => _.Count == purchasebill.Count);
-            expected.Should().Contain(_ => _.WholePrice == purchasebill.WholePrice);
+            expected.Should()
+                .Contain(_ => _.SellerName == purchasebill.SellerName);
+            expected.Should()
+                .Contain(_ => _.Date.Date == purchasebill.Date.Date);
+            expected.Should()
+                .Contain(_ => _.WholePrice == purchasebill.WholePrice);
         }
 
         [Fact]
