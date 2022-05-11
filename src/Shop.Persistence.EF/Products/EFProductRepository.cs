@@ -1,4 +1,5 @@
-﻿using Shop.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Shop.Entities;
 using Shop.Services.Products.Contracts;
 using Shop.Services.PurchaseBills.Contracts;
 using Shop.Services.SaleBills.Contracts;
@@ -21,10 +22,10 @@ namespace Shop.Persistence.EF.Products
             _dataContext.Products.Add(product);
         }
 
-        public void AddtoStock(int code, int count)
+        public void AddtoStock(int id, int count)
         {
             _dataContext.Products
-                .FirstOrDefault(_ => _.Code == code).InStockCount += count;
+                .FirstOrDefault(_ => _.Id == id).InStockCount += count;
         }
 
         public void Delete(Product product)
@@ -35,6 +36,8 @@ namespace Shop.Persistence.EF.Products
         public Product FindByCode(int code)
         {
             return _dataContext.Products
+                .Include(_ => _.PurchaseBills)
+                .Include(_ => _.SaleBills)
                 .Where(_ => _.Code == code).FirstOrDefault();
         }
 
@@ -45,33 +48,39 @@ namespace Shop.Persistence.EF.Products
 
         public GetProductDto Get(int code)
         {
-            return _dataContext.Products.Where(_ => _.Code == code).Select(_ => new GetProductDto
-            {
-                Code = _.Code,
-                CategoryId = _.CategoryId,
-                Id = _.Id,
-                InStockCount = _.InStockCount,
-                Name = _.Name,
-                Price = _.Price
-            }).FirstOrDefault();
+            return _dataContext.Products
+                .Where(_ => _.Code == code)
+                .Select(_ => new GetProductDto
+                {
+                    Code = _.Code,
+                    CategoryId = _.CategoryId,
+                    Id = _.Id,
+                    InStockCount = _.InStockCount,
+                    Name = _.Name,
+                    Price = _.Price,
+                    MinimumInStock = _.MinimumInStock
+                }).FirstOrDefault();
         }
 
         public IList<GetProductDto> GetAll()
         {
-            return _dataContext.Products.Select(_ => new GetProductDto
-            {
-                Name = _.Name,
-                Price = _.Price,
-                InStockCount = _.InStockCount,
-                Code = _.Code,
-                Id = _.Id,
-                CategoryId = _.CategoryId
-            }).ToList();
-        }
+            return _dataContext.Products
+                .Select(_ => new GetProductDto
+                {
+                    Name = _.Name,
+                    Price = _.Price,
+                    InStockCount = _.InStockCount,
+                    Code = _.Code,
+                    Id = _.Id,
+                    CategoryId = _.CategoryId,
+                    MinimumInStock = _.MinimumInStock
+                }).ToList();
+            }
 
         public GetProductWithPurchaseBillsDto GetPurchaseBills(int code)
         {
-            return _dataContext.Products.Where(_ => _.Code == code)
+            return _dataContext.Products
+                .Where(_ => _.Code == code)
                 .Select(_ => new GetProductWithPurchaseBillsDto
                 {
                     Code = _.Code,
@@ -79,7 +88,8 @@ namespace Shop.Persistence.EF.Products
                     InStockCount = _.InStockCount,
                     Price = _.Price,
                     Id = _.Id,
-                    PurchaseBills = _.PurchaseBills.Select(_ => new GetPurchaseBillDto
+                    PurchaseBills = _.PurchaseBills
+                    .Select(_ => new GetPurchaseBillDto
                     {
                         Count = _.Count,
                         SellerName = _.SellerName,
@@ -93,7 +103,8 @@ namespace Shop.Persistence.EF.Products
 
         public GetProductWithSaleBillsDto GetSaleBills(int code)
         {
-            return _dataContext.Products.Where(_ => _.Code == code)
+            return _dataContext.Products
+                .Where(_ => _.Code == code)
                 .Select(_ => new GetProductWithSaleBillsDto
                 {
                     Code = _.Code,
@@ -125,9 +136,18 @@ namespace Shop.Persistence.EF.Products
                 .Any();
         }
 
-        public void RemoveFromStock(Product product, int count)
+        public bool IsNameDuplicate(string name, int code)
         {
-            product.InStockCount -= count;
+            var product = FindByCode(code);
+            return _dataContext.Products
+                .Any(_ => _.CategoryId == product.CategoryId 
+                && _.Name == name && _.Id != product.Id);
+        }
+
+        public void RemoveFromStock(int id, int count)
+        {
+            _dataContext.Products
+                .FirstOrDefault(_ => _.Id == id).InStockCount -= count;
         }
     }
 }

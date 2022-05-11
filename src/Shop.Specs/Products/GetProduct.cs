@@ -28,7 +28,6 @@ namespace Shop.Specs.Products
         private readonly UnitOfWork _unitOfWork;
         private readonly ProductService _sut;
         private Product _product;
-
         GetProductDto expected;
         public GetProduct(ConfigurationFixture configuration) : base(configuration)
         {
@@ -61,6 +60,7 @@ namespace Shop.Specs.Products
         public void Then()
         {
             expected.Id.Should().Be(_product.Id);
+            expected.MinimumInStock.Should().Be(_product.MinimumInStock);
             expected.CategoryId.Should().Be(_product.CategoryId);
             expected.Name.Should().Be(_product.Name);
             expected.InStockCount.Should().Be( _product.InStockCount);

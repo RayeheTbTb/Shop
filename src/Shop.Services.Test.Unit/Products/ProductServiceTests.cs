@@ -219,10 +219,12 @@ namespace Shop.Services.Test.Unit.Products
             expected.Should().Contain(_ => _.Id == product.Id);
             expected.Should().Contain(_ => _.CategoryId == product.CategoryId);
             expected.Should().Contain(_ => _.Name == product.Name);
-            expected.Should()
-                .Contain(_ => _.InStockCount == product.InStockCount);
             expected.Should().Contain(_ => _.Code == product.Code);
             expected.Should().Contain(_ => _.Price == product.Price);
+            expected.Should()
+                .Contain(_ => _.MinimumInStock == product.MinimumInStock);
+            expected.Should()
+                .Contain(_ => _.InStockCount == product.InStockCount);
         }
 
         [Fact]
@@ -241,6 +243,7 @@ namespace Shop.Services.Test.Unit.Products
             expected.InStockCount.Should().Be(product.InStockCount);
             expected.Code.Should().Be(product.Code);
             expected.Price.Should().Be(product.Price);
+            expected.MinimumInStock.Should().Be(product.MinimumInStock);
         }
 
         [Theory]
@@ -321,9 +324,9 @@ namespace Shop.Services.Test.Unit.Products
             expected.Code.Should().Be(product.Code);
             expected.Price.Should().Be(product.Price);
             expected.SaleBills.Should().HaveCount(1);
+            expected.SaleBills.Should().Contain(_ => _.Id == saleBills.Id);
             expected.SaleBills.Should()
                 .Contain(_ => _.CustomerName == saleBills.CustomerName);
-            expected.SaleBills.Should().Contain(_ => _.Id == saleBills.Id);
             expected.SaleBills.Should()
                 .Contain(_ => _.Count == saleBills.Count);
             expected.SaleBills.Should()

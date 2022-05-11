@@ -31,7 +31,8 @@ namespace Shop.Persistence.EF.SaleBills
 
         public GetSaleBillDto Get(int id)
         {
-            return _dataContext.SaleBills.Where(_ => _.Id == id)
+            return _dataContext.SaleBills
+                .Where(_ => _.Id == id)
                 .Select(_ => new GetSaleBillDto
                 {
                     Id = _.Id,
@@ -45,15 +46,16 @@ namespace Shop.Persistence.EF.SaleBills
 
         public IList<GetSaleBillDto> GetAll()
         {
-            return _dataContext.SaleBills.Select(_ => new GetSaleBillDto
-            {
-                Count = _.Count,
-                CustomerName = _.CustomerName,
-                Date = _.Date,
-                Id = _.Id,
-                ProductId = _.ProductId,
-                WholePrice = _.WholePrice
-            }).ToList();
+            return _dataContext.SaleBills
+                .Select(_ => new GetSaleBillDto
+                {
+                    Count = _.Count,
+                    CustomerName = _.CustomerName,
+                    Date = _.Date,
+                    Id = _.Id,
+                    ProductId = _.ProductId,
+                    WholePrice = _.WholePrice
+                }).ToList();
         }
 
         

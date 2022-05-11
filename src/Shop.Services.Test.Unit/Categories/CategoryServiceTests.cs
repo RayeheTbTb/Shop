@@ -144,6 +144,8 @@ namespace Shop.Services.Test.Unit.Categories
             expected.Should().Contain(_ => _.Price == product.Price);
             expected.Should()
                 .Contain(_ => _.InStockCount == product.InStockCount);
+            expected.Should()
+                .Contain(_ => _.MinimumInStock == product.MinimumInStock);
         }
 
         private static AddCategoryDto GenerateAddCategoryDto(string title)

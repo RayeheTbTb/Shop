@@ -36,7 +36,8 @@ namespace Shop.Persistence.EF.PurchaseBills
 
         public GetPurchaseBillDto Get(int id)
         {
-            return _dataContext.PurchaseBills.Where(_ => _.Id == id)
+            return _dataContext.PurchaseBills
+                .Where(_ => _.Id == id)
                 .Select(_ => new GetPurchaseBillDto
                 {
                     Count = _.Count,

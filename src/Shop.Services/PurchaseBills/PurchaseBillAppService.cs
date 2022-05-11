@@ -53,7 +53,7 @@ namespace Shop.Services.PurchaseBills
                 throw new PurchaseBillNotFoundException();
             }
             _productRepository
-                .RemoveFromStock(purchaseBill.Product, purchaseBill.Count);
+                .RemoveFromStock(purchaseBill.ProductId, purchaseBill.Count);
             _repository.Delete(purchaseBill);
             _unitOfWork.Commit();
         }
@@ -86,13 +86,13 @@ namespace Shop.Services.PurchaseBills
             Product previousProduct = _productRepository
                 .FindById(purchaseBill.ProductId);
 
-            _productRepository.RemoveFromStock(previousProduct, dto.Count);
+            _productRepository.RemoveFromStock(previousProduct.Id, dto.Count);
             purchaseBill.Product = product;
             purchaseBill.ProductId = product.Id;
             purchaseBill.Count = dto.Count;
             purchaseBill.SellerName = dto.SellerName;
             purchaseBill.WholePrice = dto.WholePrice;
-            _productRepository.AddtoStock(dto.ProductCode, dto.Count);
+            _productRepository.AddtoStock(product.Id, dto.Count);
             _unitOfWork.Commit();
         }
     }

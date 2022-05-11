@@ -70,6 +70,8 @@ namespace Shop.Specs.Categories
             expected.Should().Contain(_ => _.Price == _product.Price);
             expected.Should()
                 .Contain(_ => _.InStockCount == _product.InStockCount);
+            expected.Should()
+                .Contain(_ => _.MinimumInStock == _product.MinimumInStock);
         }
 
         [Fact]

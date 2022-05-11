@@ -73,8 +73,7 @@ namespace Shop.Services.Products
                 ProductId = product.Id
             };
 
-            product.Price = dto.WholePrice / dto.Count;
-            _repository.AddtoStock(dto.Code, dto.Count);
+            _repository.AddtoStock(product.Id, dto.Count);
             _purchaseBillRepository.Add(purchaseBill);
             _unitOfWork.Commit();
         }
@@ -87,7 +86,8 @@ namespace Shop.Services.Products
 
             if (billForProductExists)
             {
-                throw new UnableToDeleteProductWithExistingPurchaseBillException();
+                throw new 
+                    UnableToDeleteProductWithExistingPurchaseBillException();
             }
 
             if(product == null)
@@ -123,7 +123,7 @@ namespace Shop.Services.Products
                 throw new ProductNotFoundException();
             }
 
-            if (product.PurchaseBills.Count() == 0)
+            if (product.PurchaseBills.Count == 0)
             {
                 throw new PurchaseBillNotFoundException();
             }
@@ -138,10 +138,11 @@ namespace Shop.Services.Products
                 throw new ProductNotFoundException();
             }
 
-            if (product.SaleBills.Count() == 0)
+            if(product.SaleBills.Count == 0)
             {
                 throw new SaleBillNotFoundException();
             }
+            
             return _repository.GetSaleBills(code);
         }
 
@@ -153,9 +154,9 @@ namespace Shop.Services.Products
                 throw new ProductNotFoundException();
             }
 
-            var isNameDuplicate = _repository
-                .IsExistNameInCategory(product.CategoryId, dto.Name);
+            var isNameDuplicate = _repository.IsNameDuplicate(dto.Name, code);
             if (isNameDuplicate)
+
             {
                 throw new DuplicateProductNameInCategoryException();
             }

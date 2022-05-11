@@ -44,7 +44,7 @@ namespace Shop.Services.SaleBills
                 Product = product
             };
             _repository.Add(saleBill);
-            _productRepository.RemoveFromStock(product, dto.Count);
+            _productRepository.RemoveFromStock(product.Id, dto.Count);
 
             if(product.InStockCount == 0)
             {
@@ -67,7 +67,7 @@ namespace Shop.Services.SaleBills
                 throw new SaleBillNotFoundException();
             }
 
-            _productRepository.AddtoStock(saleBill.Product.Code, saleBill.Count);
+            _productRepository.AddtoStock(saleBill.ProductId, saleBill.Count);
             _repository.Delete(saleBill);
             _unitOfWork.Commit();
         }
@@ -103,14 +103,14 @@ namespace Shop.Services.SaleBills
                 throw new NotEnoughProductInStockException();
             }
 
-            _productRepository.AddtoStock(previousProduct.Code, dto.Count);
+            _productRepository.AddtoStock(previousProduct.Id, dto.Count);
 
             saleBill.Product = product;
             saleBill.ProductId = product.Id;
             saleBill.Count = dto.Count;
             saleBill.CustomerName = dto.CustomerName;
             saleBill.WholePrice = dto.WholePrice;
-            _productRepository.RemoveFromStock(product, saleBill.Count);
+            _productRepository.RemoveFromStock(product.Id, saleBill.Count);
 
             if (product.InStockCount == 0)
             {
